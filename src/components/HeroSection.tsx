@@ -1,9 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Star, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
 import heroImage from "@/assets/hero-image.jpg";
 
 export function HeroSection() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/student-dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background to-muted">
       {/* Background image with overlay */}
@@ -34,8 +47,8 @@ export function HeroSection() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="text-lg px-8 py-6">
-                Start Learning Today
+              <Button variant="hero" size="lg" className="text-lg px-8 py-6" onClick={handleGetStarted}>
+                {user ? "Go to Dashboard" : "Start Learning Today"}
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-8 py-6">
                 View Courses

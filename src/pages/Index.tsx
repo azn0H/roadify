@@ -3,6 +3,8 @@ import { HeroSection } from "@/components/HeroSection";
 import { CourseCard } from "@/components/CourseCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
 import { 
   GraduationCap, 
   Shield, 
@@ -46,6 +48,17 @@ const courses = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/student-dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -135,9 +148,9 @@ const Index = () => {
             Join hundreds of successful students who learned to drive with confidence at Rodify.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="hero" size="lg" className="bg-white text-primary hover:bg-white/90">
-              Book Your First Lesson
-            </Button>
+          <Button variant="hero" size="lg" className="bg-white text-primary hover:bg-white/90" onClick={handleGetStarted}>
+            {user ? "Go to Dashboard" : "Book Your First Lesson"}
+          </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary">
               Contact Us
             </Button>
