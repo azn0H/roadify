@@ -2,6 +2,7 @@ import { DashboardCard } from "@/components/DashboardCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BookLessonDialog } from "@/components/BookLessonDialog";
 import { 
   Calendar,
   Clock,
@@ -12,30 +13,20 @@ import {
   AlertCircle,
   Plus
 } from "lucide-react";
+import { useLessons } from "@/hooks/use-lessons";
+import { format } from "date-fns";
 
 export default function StudentDashboard() {
-  const nextLesson = {
-    date: "March 15, 2024",
-    time: "2:00 PM",
-    location: "Downtown Training Center", 
-    instructor: "Sarah Johnson",
-    type: "Practical Driving"
-  };
+  const { lessons, lessonsLoading, profile } = useLessons();
 
-  const upcomingLessons = [
-    {
-      date: "March 18, 2024",
-      time: "10:00 AM", 
-      instructor: "Mike Chen",
-      status: "confirmed"
-    },
-    {
-      date: "March 22, 2024",
-      time: "3:00 PM",
-      instructor: "Sarah Johnson", 
-      status: "pending"
-    }
-  ];
+  const upcomingLessons = lessons?.filter(lesson => 
+    new Date(lesson.lesson_date) >= new Date() && lesson.status !== 'completed'
+  ) || [];
+  
+  const nextLesson = upcomingLessons[0];
+  const completedLessons = lessons?.filter(lesson => lesson.status === 'completed') || [];
+  const totalLessons = lessons?.length || 0;
+  const completionRate = totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -44,31 +35,33 @@ export default function StudentDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Student Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, Alex! Track your progress and manage your lessons.</p>
+            <p className="text-muted-foreground">Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}! Track your progress and manage your lessons.</p>
           </div>
-          <Button variant="automotive">
-            <Plus className="h-4 w-4 mr-2" />
-            Book New Lesson
-          </Button>
+          <BookLessonDialog>
+            <Button variant="automotive">
+              <Plus className="h-4 w-4 mr-2" />
+              Book New Lesson
+            </Button>
+          </BookLessonDialog>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <DashboardCard
             title="Lessons Remaining"
-            value="8"
-            description="Out of 12 total lessons"
+            value={Math.max(0, totalLessons - completedLessons.length)}
+            description={`Out of ${totalLessons} total lessons`}
             icon={<BookOpen className="h-5 w-5" />}
           />
           <DashboardCard
             title="Lessons Completed"
-            value="4"
+            value={completedLessons.length}
             description="Successfully finished"
             icon={<CheckCircle className="h-5 w-5" />}
           />
           <DashboardCard
             title="Progress"
-            value="33%"
+            value={`${completionRate}%`}
             description="Course completion"
             icon={<Clock className="h-5 w-5" />}
           />
@@ -90,30 +83,44 @@ export default function StudentDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-gradient-secondary rounded-lg p-6 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">{nextLesson.date}</span>
+              {nextLesson ? (
+                <>
+                  <div className="bg-gradient-secondary rounded-lg p-6 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{format(new Date(nextLesson.lesson_date), 'MMMM dd, yyyy')}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span>{nextLesson.lesson_time}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span>{nextLesson.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span>Instructor: {nextLesson.teacher?.first_name} {nextLesson.teacher?.last_name}</span>
+                    </div>
+                    <Badge className="bg-primary/10 text-primary">
+                      {nextLesson.course?.name}
+                    </Badge>
+                  </div>
+                  <Button variant="outline" className="w-full">
+                    Reschedule Lesson
+                  </Button>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">No upcoming lessons scheduled</p>
+                  <BookLessonDialog>
+                    <Button variant="automotive">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Book Your First Lesson
+                    </Button>
+                  </BookLessonDialog>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span>{nextLesson.time}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{nextLesson.location}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span>Instructor: {nextLesson.instructor}</span>
-                </div>
-                <Badge className="bg-primary/10 text-primary">
-                  {nextLesson.type}
-                </Badge>
-              </div>
-              <Button variant="outline" className="w-full">
-                Reschedule Lesson
-              </Button>
+              )}
             </CardContent>
           </Card>
 
@@ -124,12 +131,12 @@ export default function StudentDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {upcomingLessons.map((lesson, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                {upcomingLessons.slice(1, 3).map((lesson, index) => (
+                  <div key={lesson.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div className="space-y-1">
-                      <p className="font-medium">{lesson.date} at {lesson.time}</p>
+                      <p className="font-medium">{format(new Date(lesson.lesson_date), 'MMMM dd, yyyy')} at {lesson.lesson_time}</p>
                       <p className="text-sm text-muted-foreground">
-                        Instructor: {lesson.instructor}
+                        Instructor: {lesson.teacher?.first_name} {lesson.teacher?.last_name}
                       </p>
                     </div>
                     <Badge 
@@ -140,6 +147,11 @@ export default function StudentDashboard() {
                     </Badge>
                   </div>
                 ))}
+                {upcomingLessons.length === 0 && (
+                  <div className="text-center py-4 text-muted-foreground">
+                    No upcoming lessons
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

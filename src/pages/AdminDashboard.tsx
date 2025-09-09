@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AddCourseDialog } from "@/components/AddCourseDialog";
 import { 
   Users,
   DollarSign,
@@ -16,25 +17,19 @@ import {
   Edit,
   Trash2
 } from "lucide-react";
+import { useUsers } from "@/hooks/use-users";
+import { useCourses } from "@/hooks/use-courses";
+import { useLessons } from "@/hooks/use-lessons";
+import { format } from "date-fns";
 
 export default function AdminDashboard() {
-  const recentUsers = [
-    { name: "Alex Thompson", email: "alex@email.com", role: "Student", joinDate: "Mar 10, 2024" },
-    { name: "Sarah Johnson", email: "sarah@email.com", role: "Teacher", joinDate: "Mar 8, 2024" },
-    { name: "Mike Chen", email: "mike@email.com", role: "Student", joinDate: "Mar 5, 2024" }
-  ];
+  const { users, teachers } = useUsers();
+  const { allCourses } = useCourses();
+  const { lessons } = useLessons();
 
-  const courses = [
-    { name: "Basic Driving Course", price: "$299", enrolled: 45, revenue: "$13,455" },
-    { name: "Intensive Course", price: "$599", enrolled: 32, revenue: "$19,168" },
-    { name: "Advanced Driving", price: "$399", enrolled: 28, revenue: "$11,172" }
-  ];
-
-  const teachers = [
-    { name: "Sarah Johnson", students: 24, rating: 4.9, lessons: 156 },
-    { name: "Mike Chen", students: 19, rating: 4.7, lessons: 142 },
-    { name: "Emma Davis", students: 21, rating: 4.8, lessons: 134 }
-  ];
+  const recentUsers = users?.slice(0, 3) || [];
+  const totalRevenue = 43927; // This would come from actual payment data
+  const totalBookings = lessons?.length || 0;
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -61,21 +56,21 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <DashboardCard
             title="Total Users"
-            value="247"
+            value={users?.length || 0}
             description="Active users in system"
             icon={<Users className="h-5 w-5" />}
             trend={{ value: 15, label: "from last month" }}
           />
           <DashboardCard
             title="Monthly Revenue"
-            value="$43,927"
+            value={`$${totalRevenue.toLocaleString()}`}
             description="Current month earnings"
             icon={<DollarSign className="h-5 w-5" />}
             trend={{ value: 8, label: "from last month" }}
           />
           <DashboardCard
             title="Total Bookings"
-            value="156"
+            value={totalBookings}
             description="This month"
             icon={<Calendar className="h-5 w-5" />}
             trend={{ value: 22, label: "from last month" }}
@@ -140,14 +135,14 @@ export default function AdminDashboard() {
                 <CardContent>
                   <div className="space-y-3">
                     {recentUsers.map((user, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div key={user.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                         <div>
-                          <p className="font-medium text-sm">{user.name}</p>
+                          <p className="font-medium text-sm">{user.first_name} {user.last_name}</p>
                           <p className="text-xs text-muted-foreground">{user.email}</p>
                         </div>
                         <div className="text-right">
                           <Badge variant="outline">{user.role}</Badge>
-                          <p className="text-xs text-muted-foreground mt-1">{user.joinDate}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{format(new Date(user.created_at), 'MMM dd, yyyy')}</p>
                         </div>
                       </div>
                     ))}
@@ -175,29 +170,24 @@ export default function AdminDashboard() {
                     </Button>
                   </div>
                   <div className="space-y-3">
-                    {[
-                      { name: "Alex Thompson", email: "alex@email.com", role: "Student", status: "Active", lessons: 8 },
-                      { name: "Sarah Johnson", email: "sarah@email.com", role: "Teacher", status: "Active", lessons: 156 },
-                      { name: "Mike Chen", email: "mike@email.com", role: "Student", status: "Active", lessons: 12 },
-                      { name: "Emma Davis", email: "emma@email.com", role: "Teacher", status: "Active", lessons: 134 }
-                    ].map((user, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    {users?.map((user, index) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                         <div className="flex items-center gap-4">
                           <div>
-                            <p className="font-medium">{user.name}</p>
+                            <p className="font-medium">{user.first_name} {user.last_name}</p>
                             <p className="text-sm text-muted-foreground">{user.email}</p>
                           </div>
                           <Badge variant="outline">{user.role}</Badge>
                           <Badge 
-                            variant={user.status === 'Active' ? 'default' : 'secondary'}
-                            className={user.status === 'Active' ? 'bg-green-100 text-green-800' : ''}
+                            variant="default"
+                            className="bg-green-100 text-green-800"
                           >
-                            {user.status}
+                            Active
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground">
-                            {user.role === 'Student' ? `${user.lessons} lessons` : `${user.lessons} taught`}
+                            {format(new Date(user.created_at), 'MMM dd, yyyy')}
                           </span>
                           <Button size="sm" variant="ghost">
                             <Edit className="h-4 w-4" />
@@ -207,7 +197,7 @@ export default function AdminDashboard() {
                           </Button>
                         </div>
                       </div>
-                    ))}
+                    )) || []}
                   </div>
                 </div>
               </CardContent>
@@ -226,14 +216,16 @@ export default function AdminDashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">All Courses</h4>
-                    <Button size="sm" variant="automotive">
-                      <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Course
-                    </Button>
+                    <AddCourseDialog>
+                      <Button size="sm" variant="automotive">
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                        Add Course
+                      </Button>
+                    </AddCourseDialog>
                   </div>
                   <div className="space-y-4">
-                    {courses.map((course, index) => (
-                      <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                    {allCourses?.map((course, index) => (
+                      <div key={course.id} className="p-4 bg-muted/30 rounded-lg">
                         <div className="flex items-center justify-between mb-3">
                           <h5 className="font-semibold">{course.name}</h5>
                           <div className="flex items-center gap-2">
@@ -249,19 +241,19 @@ export default function AdminDashboard() {
                         <div className="grid md:grid-cols-3 gap-4 text-sm">
                           <div>
                             <span className="text-muted-foreground">Price: </span>
-                            <span className="font-medium text-primary">{course.price}</span>
+                            <span className="font-medium text-primary">${course.price}</span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Enrolled: </span>
-                            <span className="font-medium">{course.enrolled} students</span>
+                            <span className="text-muted-foreground">Duration: </span>
+                            <span className="font-medium">{course.duration_hours} hours</span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Revenue: </span>
-                            <span className="font-medium text-green-600">{course.revenue}</span>
+                            <span className="text-muted-foreground">Status: </span>
+                            <span className="font-medium text-green-600">{course.is_active ? 'Active' : 'Inactive'}</span>
                           </div>
                         </div>
                       </div>
-                    ))}
+                    )) || []}
                   </div>
                 </div>
               </CardContent>
@@ -286,35 +278,42 @@ export default function AdminDashboard() {
                     </Button>
                   </div>
                   <div className="space-y-4">
-                    {teachers.map((teacher, index) => (
-                      <div key={index} className="p-4 bg-muted/30 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                          <h5 className="font-semibold">{teacher.name}</h5>
-                          <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline">
-                              View Profile
-                            </Button>
-                            <Button size="sm" variant="ghost">
-                              <Edit className="h-4 w-4" />
-                            </Button>
+                    {teachers?.map((teacher, index) => {
+                      const teacherLessons = lessons?.filter(lesson => lesson.teacher_id === teacher.id) || [];
+                      const teacherStudents = users?.filter(user => 
+                        user.role === 'student' && teacherLessons.some(lesson => lesson.student_id === user.id)
+                      ) || [];
+                      
+                      return (
+                        <div key={teacher.id} className="p-4 bg-muted/30 rounded-lg">
+                          <div className="flex items-center justify-between mb-3">
+                            <h5 className="font-semibold">{teacher.first_name} {teacher.last_name}</h5>
+                            <div className="flex items-center gap-2">
+                              <Button size="sm" variant="outline">
+                                View Profile
+                              </Button>
+                              <Button size="sm" variant="ghost">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="grid md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <span className="text-muted-foreground">Students: </span>
+                              <span className="font-medium">{teacherStudents.length}</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Rating: </span>
+                              <span className="font-medium text-accent">4.8/5</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Lessons: </span>
+                              <span className="font-medium">{teacherLessons.length} taught</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="grid md:grid-cols-3 gap-4 text-sm">
-                          <div>
-                            <span className="text-muted-foreground">Students: </span>
-                            <span className="font-medium">{teacher.students}</span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Rating: </span>
-                            <span className="font-medium text-accent">{teacher.rating}/5</span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Lessons: </span>
-                            <span className="font-medium">{teacher.lessons} taught</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    }) || []}
                   </div>
                 </div>
               </CardContent>
