@@ -7,6 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Car, Eye, EyeOff } from 'lucide-react';
+import googleLogo from '@/images/google-icon.svg';
+import facebookLogo from '@/images/facebook-icon.svg';
+import { supabase } from '../../supabaseClient';  // Importuj svůj Supabase klient
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -83,7 +86,45 @@ export default function Auth() {
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
-              
+              <div className="space-y-2 mb-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2"
+                onClick={async () => {
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                  });
+                  if (error) {
+                    console.error('Error signing in with Google:', error.message);
+                  } else {
+                    console.log('Google sign-in successful');
+                  }
+                }}
+              >
+                <img src={googleLogo} alt="Google" className="h-5 w-5" />
+                Přihlásit se pomocí Google
+              </Button>
+              <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2"
+                  onClick={async () => {
+                    const { error } = await supabase.auth.signInWithOAuth({
+                      provider: 'facebook',
+                    });
+                    if (error) {
+                      console.error('Error signing in with Apple:', error.message);
+                    } else {
+                      console.log('Facebook sign-in successful');
+                    }
+                  }}
+                >
+                  <img src={facebookLogo} alt="Apple" className="h-5 w-5" />
+                  Přihlásit se pomocí Facebook
+                </Button>
+
+            </div>
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
