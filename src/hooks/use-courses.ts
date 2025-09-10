@@ -109,6 +109,31 @@ export function useCourses() {
     },
   });
 
+  const deleteCourse = useMutation({
+    mutationFn: async (courseId: string) => {
+      const { error } = await supabase
+        .from('courses')
+        .delete()
+        .eq('id', courseId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      queryClient.invalidateQueries({ queryKey: ['all-courses'] });
+      toast({
+        title: "Course deleted successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to delete course",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     courses: courses || [],
     allCourses: allCourses || [],
@@ -116,5 +141,6 @@ export function useCourses() {
     allCoursesLoading,
     createCourse,
     updateCourse,
+    deleteCourse,
   };
 }

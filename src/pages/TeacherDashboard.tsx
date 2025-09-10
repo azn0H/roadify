@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AddNotesDialog } from "@/components/AddNotesDialog";
+import { ViewScheduleDialog } from "@/components/ViewScheduleDialog";
 import { 
   Users,
   Calendar,
@@ -42,9 +43,11 @@ export default function TeacherDashboard() {
             <p className="text-muted-foreground">Good morning{profile?.first_name ? `, ${profile.first_name}` : ''}! Here's your teaching overview.</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
-              View Schedule
-            </Button>
+            <ViewScheduleDialog>
+              <Button variant="outline">
+                View Schedule
+              </Button>
+            </ViewScheduleDialog>
             <AddNotesDialog lessonId="" currentNotes="">
               <Button variant="automotive">
                 Add Lesson Notes
@@ -223,36 +226,23 @@ export default function TeacherDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    {
-                      student: "John Smith",
-                      requestedDate: "March 20, 2024",
-                      requestedTime: "2:00 PM",
-                      type: "Practical Driving",
-                      message: "Would like to focus on highway driving"
-                    },
-                    {
-                      student: "Lisa Brown", 
-                      requestedDate: "March 22, 2024",
-                      requestedTime: "10:00 AM",
-                      type: "Parking Practice",
-                      message: "Need extra practice with parallel parking"
-                    }
-                  ].map((request, index) => (
-                    <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                  {teacherLessons
+                    .filter(lesson => lesson.status === 'pending')
+                    .map((lesson, index) => (
+                    <div key={lesson.id} className="p-4 bg-muted/30 rounded-lg">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h4 className="font-medium">{request.student}</h4>
+                          <h4 className="font-medium">{lesson.student?.first_name} {lesson.student?.last_name}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Requested: {request.requestedDate} at {request.requestedTime}
+                            Requested: {format(new Date(lesson.lesson_date), 'MMM dd, yyyy')} at {lesson.lesson_time}
                           </p>
                           <Badge variant="outline" className="mt-1">
-                            {request.type}
+                            {lesson.course?.name}
                           </Badge>
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">
-                        "{request.message}"
+                        Location: {lesson.location}
                       </p>
                       <div className="flex gap-2">
                         <Button size="sm" variant="automotive">
@@ -266,7 +256,12 @@ export default function TeacherDashboard() {
                         </Button>
                       </div>
                     </div>
-                  ))}
+                    ))}
+                  {teacherLessons.filter(lesson => lesson.status === 'pending').length === 0 && (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No pending requests
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

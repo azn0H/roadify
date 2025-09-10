@@ -96,6 +96,32 @@ export function useUsers() {
     },
   });
 
+  const deleteUser = useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['teachers'] });
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      toast({
+        title: "User deleted successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to delete user",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     users: users || [],
     teachers: teachers || [],
@@ -104,5 +130,6 @@ export function useUsers() {
     teachersLoading,
     studentsLoading,
     updateUser,
+    deleteUser,
   };
 }

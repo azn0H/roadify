@@ -4,6 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AddCourseDialog } from "@/components/AddCourseDialog";
+import { AddUserDialog } from "@/components/AddUserDialog";
+import { EditUserDialog } from "@/components/EditUserDialog";
+import { SettingsDialog } from "@/components/SettingsDialog";
+import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
 import { 
   Users,
   DollarSign,
@@ -23,8 +27,8 @@ import { useLessons } from "@/hooks/use-lessons";
 import { format } from "date-fns";
 
 export default function AdminDashboard() {
-  const { users, teachers } = useUsers();
-  const { allCourses } = useCourses();
+  const { users, teachers, deleteUser } = useUsers();
+  const { allCourses, deleteCourse } = useCourses();
   const { lessons } = useLessons();
 
   const recentUsers = users?.slice(0, 3) || [];
@@ -41,14 +45,18 @@ export default function AdminDashboard() {
             <p className="text-muted-foreground">Comprehensive overview of Rodify Driving School operations.</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-            <Button variant="automotive">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add New
-            </Button>
+            <SettingsDialog>
+              <Button variant="outline">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+            </SettingsDialog>
+            <AddUserDialog>
+              <Button variant="automotive">
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Add New
+              </Button>
+            </AddUserDialog>
           </div>
         </div>
 
@@ -164,10 +172,12 @@ export default function AdminDashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">All Users</h4>
-                    <Button size="sm" variant="automotive">
-                      <PlusCircle className="h-4 w-4 mr-2" />
-                      Add User
-                    </Button>
+                    <AddUserDialog>
+                      <Button size="sm" variant="automotive">
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                        Add User
+                      </Button>
+                    </AddUserDialog>
                   </div>
                   <div className="space-y-3">
                     {users?.map((user, index) => (
@@ -189,12 +199,21 @@ export default function AdminDashboard() {
                           <span className="text-sm text-muted-foreground">
                             {format(new Date(user.created_at), 'MMM dd, yyyy')}
                           </span>
-                          <Button size="sm" variant="ghost">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <EditUserDialog user={user}>
+                            <Button size="sm" variant="ghost">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </EditUserDialog>
+                          <DeleteConfirmDialog
+                            title="Delete User"
+                            description={`Are you sure you want to delete ${user.first_name} ${user.last_name}? This action cannot be undone.`}
+                            onConfirm={() => deleteUser.mutate(user.id)}
+                            isLoading={deleteUser.isPending}
+                          >
+                            <Button size="sm" variant="ghost">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </DeleteConfirmDialog>
                         </div>
                       </div>
                     )) || []}
@@ -233,9 +252,16 @@ export default function AdminDashboard() {
                               <Edit className="h-4 w-4 mr-1" />
                               Edit
                             </Button>
-                            <Button size="sm" variant="ghost">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <DeleteConfirmDialog
+                              title="Delete Course"
+                              description={`Are you sure you want to delete the course "${course.name}"? This action cannot be undone.`}
+                              onConfirm={() => deleteCourse.mutate(course.id)}
+                              isLoading={deleteCourse.isPending}
+                            >
+                              <Button size="sm" variant="ghost">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </DeleteConfirmDialog>
                           </div>
                         </div>
                         <div className="grid md:grid-cols-3 gap-4 text-sm">
@@ -272,10 +298,12 @@ export default function AdminDashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">All Teachers</h4>
-                    <Button size="sm" variant="automotive">
-                      <PlusCircle className="h-4 w-4 mr-2" />
-                      Add Teacher
-                    </Button>
+                    <AddUserDialog>
+                      <Button size="sm" variant="automotive">
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                        Add Teacher
+                      </Button>
+                    </AddUserDialog>
                   </div>
                   <div className="space-y-4">
                     {teachers?.map((teacher, index) => {

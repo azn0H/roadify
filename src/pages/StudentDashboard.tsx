@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookLessonDialog } from "@/components/BookLessonDialog";
+import { RescheduleDialog } from "@/components/RescheduleDialog";
 import { 
   Calendar,
   Clock,
@@ -106,9 +107,15 @@ export default function StudentDashboard() {
                       {nextLesson.course?.name}
                     </Badge>
                   </div>
-                  <Button variant="outline" className="w-full">
-                    Reschedule Lesson
-                  </Button>
+                  <RescheduleDialog
+                    lessonId={nextLesson.id}
+                    currentDate={nextLesson.lesson_date}
+                    currentTime={nextLesson.lesson_time}
+                  >
+                    <Button variant="outline" className="w-full">
+                      Reschedule Lesson
+                    </Button>
+                  </RescheduleDialog>
                 </>
               ) : (
                 <div className="text-center py-8">
