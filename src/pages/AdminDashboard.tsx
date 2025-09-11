@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AddCourseDialog } from "@/components/AddCourseDialog";
+import { EditCourseDialog } from "@/components/EditCourseDialog";
 import { AddUserDialog } from "@/components/AddUserDialog";
 import { EditUserDialog } from "@/components/EditUserDialog";
 import { SettingsDialog } from "@/components/SettingsDialog";
+import { ViewTeacherProfileDialog } from "@/components/ViewTeacherProfileDialog";
 import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
 import { 
   Users,
@@ -248,10 +250,12 @@ export default function AdminDashboard() {
                         <div className="flex items-center justify-between mb-3">
                           <h5 className="font-semibold">{course.name}</h5>
                           <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline">
-                              <Edit className="h-4 w-4 mr-1" />
-                              Edit
-                            </Button>
+                            <EditCourseDialog course={course}>
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                            </EditCourseDialog>
                             <DeleteConfirmDialog
                               title="Delete Course"
                               description={`Are you sure you want to delete the course "${course.name}"? This action cannot be undone.`}
@@ -317,12 +321,16 @@ export default function AdminDashboard() {
                           <div className="flex items-center justify-between mb-3">
                             <h5 className="font-semibold">{teacher.first_name} {teacher.last_name}</h5>
                             <div className="flex items-center gap-2">
-                              <Button size="sm" variant="outline">
-                                View Profile
-                              </Button>
-                              <Button size="sm" variant="ghost">
-                                <Edit className="h-4 w-4" />
-                              </Button>
+                              <ViewTeacherProfileDialog teacher={teacher}>
+                                <Button size="sm" variant="outline">
+                                  View Profile
+                                </Button>
+                              </ViewTeacherProfileDialog>
+                              <EditUserDialog user={teacher}>
+                                <Button size="sm" variant="ghost">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </EditUserDialog>
                             </div>
                           </div>
                           <div className="grid md:grid-cols-3 gap-4 text-sm">

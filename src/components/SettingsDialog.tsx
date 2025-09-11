@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import { 
   Settings, 
   User, 
@@ -23,6 +25,59 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ children }: SettingsDialogProps) {
+  const { toast } = useToast();
+  const [settings, setSettings] = useState({
+    school_name: "Rodify Driving School",
+    timezone: "UTC-5 (Eastern Time)",
+    contact_email: "info@rodifydriving.com",
+    contact_phone: "+1 (555) 123-4567",
+    open_time: "08:00",
+    close_time: "18:00",
+    notifications: {
+      new_users: true,
+      lesson_bookings: true,
+      payments: true,
+      lesson_reminders: true,
+      emergency_alerts: true,
+    },
+    security: {
+      min_password_length: true,
+      require_special_chars: true,
+      require_numbers: true,
+      require_2fa_admin: false,
+    },
+    session_timeout: 8,
+    max_login_attempts: 5,
+    backup_enabled: true,
+    backup_time: "02:00",
+    retention_days: 30,
+  });
+
+  const handleSave = (section: string) => {
+    // In a real app, this would save to the database
+    toast({
+      title: `${section} settings saved successfully!`,
+      description: "Your changes have been applied.",
+    });
+  };
+
+  const handleInputChange = (field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleNestedInputChange = (section: 'notifications' | 'security', field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      [section]: {
+        ...(prev[section] as any),
+        [field]: value
+      }
+    }));
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -56,22 +111,40 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="school_name">School Name</Label>
-                    <Input id="school_name" defaultValue="Rodify Driving School" />
+                    <Input 
+                      id="school_name" 
+                      value={settings.school_name}
+                      onChange={(e) => handleInputChange('school_name', e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="timezone">Timezone</Label>
-                    <Input id="timezone" defaultValue="UTC-5 (Eastern Time)" />
+                    <Input 
+                      id="timezone" 
+                      value={settings.timezone}
+                      onChange={(e) => handleInputChange('timezone', e.target.value)}
+                    />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="contact_email">Contact Email</Label>
-                  <Input id="contact_email" type="email" defaultValue="info@rodifydriving.com" />
+                  <Input 
+                    id="contact_email" 
+                    type="email" 
+                    value={settings.contact_email}
+                    onChange={(e) => handleInputChange('contact_email', e.target.value)}
+                  />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="contact_phone">Contact Phone</Label>
-                  <Input id="contact_phone" type="tel" defaultValue="+1 (555) 123-4567" />
+                  <Input 
+                    id="contact_phone" 
+                    type="tel" 
+                    value={settings.contact_phone}
+                    onChange={(e) => handleInputChange('contact_phone', e.target.value)}
+                  />
                 </div>
                 
                 <Separator />
@@ -81,16 +154,26 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="open_time">Opening Time</Label>
-                      <Input id="open_time" type="time" defaultValue="08:00" />
+                      <Input 
+                        id="open_time" 
+                        type="time" 
+                        value={settings.open_time}
+                        onChange={(e) => handleInputChange('open_time', e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="close_time">Closing Time</Label>
-                      <Input id="close_time" type="time" defaultValue="18:00" />
+                      <Input 
+                        id="close_time" 
+                        type="time" 
+                        value={settings.close_time}
+                        onChange={(e) => handleInputChange('close_time', e.target.value)}
+                      />
                     </div>
                   </div>
                 </div>
                 
-                <Button variant="automotive" className="w-full">
+                <Button variant="automotive" className="w-full" onClick={() => handleSave('General')}>
                   Save General Settings
                 </Button>
               </CardContent>
@@ -114,21 +197,30 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                         <Label>New User Registrations</Label>
                         <p className="text-sm text-muted-foreground">Notify when new users sign up</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.notifications.new_users}
+                        onCheckedChange={(checked) => handleNestedInputChange('notifications', 'new_users', checked)}
+                      />
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label>Lesson Bookings</Label>
                         <p className="text-sm text-muted-foreground">Notify when lessons are booked</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.notifications.lesson_bookings}
+                        onCheckedChange={(checked) => handleNestedInputChange('notifications', 'lesson_bookings', checked)}
+                      />
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label>Payment Confirmations</Label>
                         <p className="text-sm text-muted-foreground">Notify when payments are received</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.notifications.payments}
+                        onCheckedChange={(checked) => handleNestedInputChange('notifications', 'payments', checked)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -143,19 +235,25 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                         <Label>Lesson Reminders</Label>
                         <p className="text-sm text-muted-foreground">Send SMS reminders 24h before lessons</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.notifications.lesson_reminders}
+                        onCheckedChange={(checked) => handleNestedInputChange('notifications', 'lesson_reminders', checked)}
+                      />
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label>Emergency Notifications</Label>
                         <p className="text-sm text-muted-foreground">Critical system alerts via SMS</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.notifications.emergency_alerts}
+                        onCheckedChange={(checked) => handleNestedInputChange('notifications', 'emergency_alerts', checked)}
+                      />
                     </div>
                   </div>
                 </div>
                 
-                <Button variant="automotive" className="w-full">
+                <Button variant="automotive" className="w-full" onClick={() => handleSave('Notification')}>
                   Save Notification Settings
                 </Button>
               </CardContent>
@@ -179,21 +277,30 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                         <Label>Minimum Length (8 characters)</Label>
                         <p className="text-sm text-muted-foreground">Enforce minimum password length</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.security.min_password_length}
+                        onCheckedChange={(checked) => handleNestedInputChange('security', 'min_password_length', checked)}
+                      />
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label>Require Special Characters</Label>
                         <p className="text-sm text-muted-foreground">Must contain !@#$%^&* characters</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.security.require_special_chars}
+                        onCheckedChange={(checked) => handleNestedInputChange('security', 'require_special_chars', checked)}
+                      />
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label>Require Numbers</Label>
                         <p className="text-sm text-muted-foreground">Must contain at least one number</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.security.require_numbers}
+                        onCheckedChange={(checked) => handleNestedInputChange('security', 'require_numbers', checked)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -205,11 +312,21 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="session_timeout">Session Timeout (hours)</Label>
-                      <Input id="session_timeout" type="number" defaultValue="8" />
+                      <Input 
+                        id="session_timeout" 
+                        type="number" 
+                        value={settings.session_timeout}
+                        onChange={(e) => handleInputChange('session_timeout', parseInt(e.target.value))}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="max_login_attempts">Max Login Attempts</Label>
-                      <Input id="max_login_attempts" type="number" defaultValue="5" />
+                      <Input 
+                        id="max_login_attempts" 
+                        type="number" 
+                        value={settings.max_login_attempts}
+                        onChange={(e) => handleInputChange('max_login_attempts', parseInt(e.target.value))}
+                      />
                     </div>
                   </div>
                 </div>
@@ -223,11 +340,14 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                       <Label>Require 2FA for Admins</Label>
                       <p className="text-sm text-muted-foreground">Mandatory 2FA for admin accounts</p>
                     </div>
-                    <Switch />
+                    <Switch 
+                      checked={settings.security.require_2fa_admin}
+                      onCheckedChange={(checked) => handleNestedInputChange('security', 'require_2fa_admin', checked)}
+                    />
                   </div>
                 </div>
                 
-                <Button variant="automotive" className="w-full">
+                <Button variant="automotive" className="w-full" onClick={() => handleSave('Security')}>
                   Save Security Settings
                 </Button>
               </CardContent>
@@ -251,16 +371,29 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                         <Label>Automatic Daily Backups</Label>
                         <p className="text-sm text-muted-foreground">Create daily database backups</p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch 
+                        checked={settings.backup_enabled}
+                        onCheckedChange={(checked) => handleInputChange('backup_enabled', checked)}
+                      />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="backup_time">Backup Time</Label>
-                        <Input id="backup_time" type="time" defaultValue="02:00" />
+                        <Input 
+                          id="backup_time" 
+                          type="time" 
+                          value={settings.backup_time}
+                          onChange={(e) => handleInputChange('backup_time', e.target.value)}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="retention_days">Retention Period (days)</Label>
-                        <Input id="retention_days" type="number" defaultValue="30" />
+                        <Input 
+                          id="retention_days" 
+                          type="number" 
+                          value={settings.retention_days}
+                          onChange={(e) => handleInputChange('retention_days', parseInt(e.target.value))}
+                        />
                       </div>
                     </div>
                   </div>
@@ -296,7 +429,7 @@ export function SettingsDialog({ children }: SettingsDialogProps) {
                   </div>
                 </div>
                 
-                <Button variant="automotive" className="w-full">
+                <Button variant="automotive" className="w-full" onClick={() => handleSave('Database')}>
                   Save Database Settings
                 </Button>
               </CardContent>
