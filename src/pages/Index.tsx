@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { 
   GraduationCap, 
   Shield, 
@@ -50,9 +51,26 @@ const courses = [
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { userRole } = useProfile();
 
   const handleGetStarted = () => {
-    if (user) {
+    if (user && userRole) {
+      // Redirect based on user role
+      switch (userRole) {
+        case 'student':
+          navigate('/student-dashboard');
+          break;
+        case 'teacher':
+          navigate('/teacher-dashboard');
+          break;
+        case 'admin':
+          navigate('/admin-dashboard');
+          break;
+        default:
+          navigate('/student-dashboard');
+      }
+    } else if (user) {
+      // User exists but role not loaded yet, default to student
       navigate('/student-dashboard');
     } else {
       navigate('/auth');
