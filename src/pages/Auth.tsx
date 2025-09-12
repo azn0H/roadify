@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Car, Eye, EyeOff } from 'lucide-react';
 import googleLogo from '@/images/google-icon.svg';
 import facebookLogo from '@/images/facebook-icon.svg';
-import { supabase } from '../../supabaseClient';  // Importuj svůj Supabase klient
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
   const [email, setEmail] = useState('');
