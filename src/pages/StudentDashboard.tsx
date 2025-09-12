@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookLessonDialog } from "@/components/BookLessonDialog";
 import { RescheduleDialog } from "@/components/RescheduleDialog";
+import { StudentOnboarding } from "@/components/StudentOnboarding";
 import { 
   Calendar,
   Clock,
@@ -15,10 +16,43 @@ import {
   Plus
 } from "lucide-react";
 import { useLessons } from "@/hooks/use-lessons";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { useState, useEffect } from "react";
 
 export default function StudentDashboard() {
+  const { user } = useAuth();
   const { lessons, lessonsLoading, profile } = useLessons();
+  const [userCourse, setUserCourse] = useState(null);
+  const [courseLoading, setCourseLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserCourse();
+  }, [user]);
+
+  const fetchUserCourse = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('user_courses')
+      .select('*, course:courses(*)')
+      .eq('user_id', user.id)
+      .eq('instructor_confirmed', true)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching user course:', error);
+    } else if (data) {
+      setUserCourse(data);
+    }
+    setCourseLoading(false);
+  };
+
+  // Show onboarding if user hasn't completed enrollment
+  if (!courseLoading && !userCourse) {
+    return <StudentOnboarding />;
+  }
 
   const upcomingLessons = lessons?.filter(lesson => 
     new Date(lesson.lesson_date) >= new Date() && lesson.status !== 'completed'
