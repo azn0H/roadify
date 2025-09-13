@@ -49,6 +49,7 @@ export function StudentOnboarding() {
   const [userCourse, setUserCourse] = useState<UserCourse | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [saleCode, setSaleCode] = useState('');
 
   useEffect(() => {
     fetchUserCourse();
@@ -111,7 +112,10 @@ export function StudentOnboarding() {
     
     try {
       const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: { courseId: userCourse.course_id }
+        body: { 
+          courseId: userCourse.course_id,
+          saleCode: saleCode || undefined
+        }
       });
 
       if (error) throw error;
@@ -125,6 +129,32 @@ export function StudentOnboarding() {
         description: error.message,
         variant: "destructive",
       });
+    }
+  };
+
+  const goBackToStep = async (stepNumber: number) => {
+    if (!userCourse) return;
+    
+    if (stepNumber === 1) {
+      // Allow going back to course selection by deleting current course selection
+      const { error } = await supabase
+        .from('user_courses')
+        .delete()
+        .eq('id', userCourse.id);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to go back",
+          variant: "destructive",
+        });
+      } else {
+        setUserCourse(null);
+        toast({
+          title: "Course selection reset",
+          description: "You can now select a different course",
+        });
+      }
     }
   };
 
@@ -321,7 +351,7 @@ Email: info@drivingschool.com
                               <h4 className="font-semibold mb-2">{course.name}</h4>
                               <p className="text-sm text-muted-foreground mb-3">{course.description}</p>
                               <div className="flex items-center justify-between">
-                                <span className="text-lg font-bold text-primary">${course.price}</span>
+                                <span className="text-lg font-bold text-primary">{course.price} Kč</span>
                                 <Button 
                                   onClick={() => selectCourse(course.id)}
                                   variant="outline"
@@ -337,20 +367,41 @@ Email: info@drivingschool.com
                     )}
 
                     {step.id === 2 && step.current && userCourse && (
-                      <div className="bg-gradient-secondary rounded-lg p-4">
+                      <div className="bg-gradient-secondary rounded-lg p-4 space-y-4">
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <h4 className="font-semibold">{userCourse.course?.name}</h4>
                             <p className="text-muted-foreground">Course fee</p>
                           </div>
                           <span className="text-2xl font-bold text-primary">
-                            ${userCourse.course?.price}
+                            {userCourse.course?.price} Kč
                           </span>
                         </div>
-                        <Button onClick={handlePayment} className="w-full" variant="automotive">
-                          <CreditCard className="h-4 w-4 mr-2" />
-                          Pay Now
-                        </Button>
+                        
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Sale Code (Optional)</label>
+                          <input
+                            type="text"
+                            placeholder="Enter sale code"
+                            value={saleCode}
+                            onChange={(e) => setSaleCode(e.target.value.toUpperCase())}
+                            className="w-full px-3 py-2 border border-muted-foreground/25 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => goBackToStep(1)} 
+                            variant="outline" 
+                            className="flex-1"
+                          >
+                            Back to Courses
+                          </Button>
+                          <Button onClick={handlePayment} className="flex-1" variant="automotive">
+                            <CreditCard className="h-4 w-4 mr-2" />
+                            Pay Now
+                          </Button>
+                        </div>
                       </div>
                     )}
 

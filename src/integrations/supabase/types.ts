@@ -197,6 +197,45 @@ export type Database = {
         }
         Relationships: []
       }
+      sale_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          discount_percentage: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          times_used: number
+          updated_at: string
+          usage_limit: number | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          discount_percentage: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          times_used?: number
+          updated_at?: string
+          usage_limit?: number | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          discount_percentage?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          times_used?: number
+          updated_at?: string
+          usage_limit?: number | null
+        }
+        Relationships: []
+      }
       user_courses: {
         Row: {
           course_id: string
@@ -207,6 +246,7 @@ export type Database = {
           onboarding_step: number | null
           payment_status: string
           purchased_at: string
+          sale_code_used: string | null
           user_id: string
         }
         Insert: {
@@ -218,6 +258,7 @@ export type Database = {
           onboarding_step?: number | null
           payment_status?: string
           purchased_at?: string
+          sale_code_used?: string | null
           user_id: string
         }
         Update: {
@@ -229,6 +270,7 @@ export type Database = {
           onboarding_step?: number | null
           payment_status?: string
           purchased_at?: string
+          sale_code_used?: string | null
           user_id?: string
         }
         Relationships: [

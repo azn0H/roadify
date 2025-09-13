@@ -10,6 +10,7 @@ import { EditUserDialog } from "@/components/EditUserDialog";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ViewTeacherProfileDialog } from "@/components/ViewTeacherProfileDialog";
 import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
+import { SaleCodeGenerator } from "@/components/SaleCodeGenerator";
 import { 
   Users,
   DollarSign,
@@ -21,7 +22,8 @@ import {
   Car,
   PlusCircle,
   Edit,
-  Trash2
+  Trash2,
+  Ticket
 } from "lucide-react";
 import { useUsers } from "@/hooks/use-users";
 import { useCourses } from "@/hooks/use-courses";
@@ -47,6 +49,12 @@ export default function AdminDashboard() {
             <p className="text-muted-foreground">Comprehensive overview of Rodify Driving School operations.</p>
           </div>
           <div className="flex gap-2">
+            <SaleCodeGenerator>
+              <Button variant="outline">
+                <Ticket className="h-4 w-4 mr-2" />
+                Sale Codes
+              </Button>
+            </SaleCodeGenerator>
             <SettingsDialog>
               <Button variant="outline">
                 <Settings className="h-4 w-4 mr-2" />
@@ -73,7 +81,7 @@ export default function AdminDashboard() {
           />
           <DashboardCard
             title="Monthly Revenue"
-            value={`$${totalRevenue.toLocaleString()}`}
+            value={`${totalRevenue.toLocaleString()} Kč`}
             description="Current month earnings"
             icon={<DollarSign className="h-5 w-5" />}
             trend={{ value: 8, label: "from last month" }}
@@ -115,11 +123,11 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">This Month</span>
-                      <span className="font-semibold text-lg">$43,927</span>
+                      <span className="font-semibold text-lg">43,927 Kč</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Last Month</span>
-                      <span className="font-medium">$40,651</span>
+                      <span className="font-medium">40,651 Kč</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Growth</span>
@@ -271,7 +279,7 @@ export default function AdminDashboard() {
                         <div className="grid md:grid-cols-3 gap-4 text-sm">
                           <div>
                             <span className="text-muted-foreground">Price: </span>
-                            <span className="font-medium text-primary">${course.price}</span>
+                            <span className="font-medium text-primary">{course.price} Kč</span>
                           </div>
                           <div>
                             <span className="text-muted-foreground">Duration: </span>

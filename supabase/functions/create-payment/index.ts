@@ -28,7 +28,7 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
     // Get course info from request
-    const { courseId } = await req.json();
+    const { courseId, saleCode } = await req.json();
     
     // Fetch course details
     const { data: course, error: courseError } = await supabaseClient
@@ -39,6 +39,38 @@ serve(async (req) => {
 
     if (courseError || !course) {
       throw new Error("Course not found");
+    }
+
+    // Calculate final price (check for sale code)
+    let finalPrice = course.price;
+    let discountApplied = 0;
+    let saleCodeData = null;
+
+    if (saleCode) {
+      const { data: saleCodeResult, error: saleCodeError } = await supabaseClient
+        .from('sale_codes')
+        .select('*')
+        .eq('code', saleCode)
+        .eq('is_active', true)
+        .single();
+
+      if (saleCodeError || !saleCodeResult) {
+        throw new Error("Invalid or expired sale code");
+      }
+
+      // Check if sale code is expired
+      if (saleCodeResult.expires_at && new Date(saleCodeResult.expires_at) < new Date()) {
+        throw new Error("Sale code has expired");
+      }
+
+      // Check usage limit
+      if (saleCodeResult.usage_limit && saleCodeResult.times_used >= saleCodeResult.usage_limit) {
+        throw new Error("Sale code usage limit reached");
+      }
+
+      saleCodeData = saleCodeResult;
+      discountApplied = saleCodeResult.discount_percentage;
+      finalPrice = course.price * (1 - discountApplied / 100);
     }
 
     // Initialize Stripe
@@ -60,12 +92,12 @@ serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: 'czk',
             product_data: {
               name: course.name,
               description: course.description || `${course.duration_hours} hour driving course`,
             },
-            unit_amount: Math.round(course.price * 100), // Convert to cents
+            unit_amount: Math.round(finalPrice * 100), // Convert to haléře (Czech currency subunit)
           },
           quantity: 1,
         },
@@ -76,6 +108,8 @@ serve(async (req) => {
       metadata: {
         user_id: user.id,
         course_id: courseId,
+        sale_code: saleCode || '',
+        discount_applied: discountApplied.toString(),
       },
     });
 
