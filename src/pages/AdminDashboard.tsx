@@ -42,13 +42,14 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Komplexní přehled činnosti autoškoly Rodify.</p>
+            <p className="text-muted-foreground">
+              Komplexní přehled činnosti autoškoly Rodify.
+            </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <SaleCodeGenerator>
               <Button variant="outline">
                 <Ticket className="h-4 w-4 mr-2" />
