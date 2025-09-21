@@ -46,25 +46,25 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Comprehensive overview of Rodify Driving School operations.</p>
+            <p className="text-muted-foreground">Komplexní přehled činnosti autoškoly Rodify.</p>
           </div>
           <div className="flex gap-2">
             <SaleCodeGenerator>
               <Button variant="outline">
                 <Ticket className="h-4 w-4 mr-2" />
-                Sale Codes
+                Slevové kódy
               </Button>
             </SaleCodeGenerator>
             <SettingsDialog>
               <Button variant="outline">
                 <Settings className="h-4 w-4 mr-2" />
-                Settings
+                Nastavení
               </Button>
             </SettingsDialog>
             <AddUserDialog>
               <Button variant="automotive">
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Add New
+                Přidat uživatele
               </Button>
             </AddUserDialog>
           </div>
@@ -73,28 +73,28 @@ export default function AdminDashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <DashboardCard
-            title="Total Users"
+            title="Uživatelé"
             value={users?.length || 0}
             description="Active users in system"
             icon={<Users className="h-5 w-5" />}
             trend={{ value: 15, label: "from last month" }}
           />
           <DashboardCard
-            title="Monthly Revenue"
+            title="Měsíčný příjem"
             value={`${totalRevenue.toLocaleString()} Kč`}
             description="Current month earnings"
             icon={<DollarSign className="h-5 w-5" />}
             trend={{ value: 8, label: "from last month" }}
           />
           <DashboardCard
-            title="Total Bookings"
+            title="Počet rezervací"
             value={totalBookings}
             description="This month"
             icon={<Calendar className="h-5 w-5" />}
             trend={{ value: 22, label: "from last month" }}
           />
           <DashboardCard
-            title="Success Rate"
+            title="úspěšnost"
             value="95%"
             description="Overall pass rate"
             icon={<TrendingUp className="h-5 w-5" />}
@@ -104,10 +104,10 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full lg:w-[600px] grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="courses">Courses</TabsTrigger>
-            <TabsTrigger value="teachers">Teachers</TabsTrigger>
+            <TabsTrigger value="overview">Přehled</TabsTrigger>
+            <TabsTrigger value="users">Uživatelé</TabsTrigger>
+            <TabsTrigger value="courses">Kurzy</TabsTrigger>
+            <TabsTrigger value="teachers">Učitelé</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -116,21 +116,21 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-primary" />
-                    Revenue Analytics
+                    Analýza příjmů
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">This Month</span>
-                      <span className="font-semibold text-lg">43,927 Kč</span>
+                      <span className="text-sm text-muted-foreground">Tento měsíc</span>
+                      <span className="font-semibold text-lg">{totalRevenue.toLocaleString()} Kč</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Last Month</span>
+                      <span className="text-sm text-muted-foreground">Minulý měsíc</span>
                       <span className="font-medium">40,651 Kč</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Growth</span>
+                      <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Zvýšen</span>
                       <span className="font-medium text-green-600">+8.1%</span>
                     </div>
                     <div className="mt-6">
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
-                    Recent Registrations
+                    Nedávno registrovaní uživatelé
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -175,17 +175,17 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-primary" />
-                  User Management
+                  Uživatelé
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium">All Users</h4>
+                    <h4 className="font-medium">Všichni uživatelé</h4>
                     <AddUserDialog>
                       <Button size="sm" variant="automotive">
                         <PlusCircle className="h-4 w-4 mr-2" />
-                        Add User
+                        Přidat uživatele
                       </Button>
                     </AddUserDialog>
                   </div>
@@ -202,7 +202,7 @@ export default function AdminDashboard() {
                             variant="default"
                             className="bg-green-100 text-green-800"
                           >
-                            Active
+                            Aktivní
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
@@ -215,8 +215,8 @@ export default function AdminDashboard() {
                             </Button>
                           </EditUserDialog>
                           <DeleteConfirmDialog
-                            title="Delete User"
-                            description={`Are you sure you want to delete ${user.first_name} ${user.last_name}? This action cannot be undone.`}
+                            title="Smazat uživatele"
+                            description={`Opravndu chcete smazat uživatele ${user.first_name} ${user.last_name}? Tato akce je nevratná.`}
                             onConfirm={() => deleteUser.mutate(user.id)}
                             isLoading={deleteUser.isPending}
                           >
@@ -238,17 +238,17 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-primary" />
-                  Course Management
+                  Kurzy
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium">All Courses</h4>
+                    <h4 className="font-medium">Všechny kurzy</h4>
                     <AddCourseDialog>
                       <Button size="sm" variant="automotive">
                         <PlusCircle className="h-4 w-4 mr-2" />
-                        Add Course
+                        Přidat kurz
                       </Button>
                     </AddCourseDialog>
                   </div>
@@ -261,7 +261,7 @@ export default function AdminDashboard() {
                             <EditCourseDialog course={course}>
                               <Button size="sm" variant="outline">
                                 <Edit className="h-4 w-4 mr-1" />
-                                Edit
+                                Upravit
                               </Button>
                             </EditCourseDialog>
                             <DeleteConfirmDialog
@@ -278,16 +278,16 @@ export default function AdminDashboard() {
                         </div>
                         <div className="grid md:grid-cols-3 gap-4 text-sm">
                           <div>
-                            <span className="text-muted-foreground">Price: </span>
+                            <span className="text-muted-foreground">Cena: </span>
                             <span className="font-medium text-primary">{course.price} Kč</span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">Duration: </span>
-                            <span className="font-medium">{course.duration_hours} hours</span>
+                            <span className="text-muted-foreground">Délka: </span>
+                            <span className="font-medium">{course.duration_hours} hodin</span>
                           </div>
                           <div>
                             <span className="text-muted-foreground">Status: </span>
-                            <span className="font-medium text-green-600">{course.is_active ? 'Active' : 'Inactive'}</span>
+                            <span className="font-medium text-green-600">{course.is_active ? 'Aktivní' : 'Neaktivní'}</span>
                           </div>
                         </div>
                       </div>
@@ -303,17 +303,17 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Car className="h-5 w-5 text-primary" />
-                  Teacher Management
+                  Učitelé
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium">All Teachers</h4>
+                    <h4 className="font-medium">Všichni Učitelé</h4>
                     <AddUserDialog>
                       <Button size="sm" variant="automotive">
                         <PlusCircle className="h-4 w-4 mr-2" />
-                        Add Teacher
+                        Přidat učitele
                       </Button>
                     </AddUserDialog>
                   </div>
@@ -331,7 +331,7 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-2">
                               <ViewTeacherProfileDialog teacher={teacher}>
                                 <Button size="sm" variant="outline">
-                                  View Profile
+                                  Zobrazit profil
                                 </Button>
                               </ViewTeacherProfileDialog>
                               <EditUserDialog user={teacher}>
@@ -343,15 +343,15 @@ export default function AdminDashboard() {
                           </div>
                           <div className="grid md:grid-cols-3 gap-4 text-sm">
                             <div>
-                              <span className="text-muted-foreground">Students: </span>
+                              <span className="text-muted-foreground">Studenti: </span>
                               <span className="font-medium">{teacherStudents.length}</span>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Rating: </span>
+                              <span className="text-muted-foreground">Hodnocení: </span>
                               <span className="font-medium text-accent">4.8/5</span>
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Lessons: </span>
+                              <span className="text-muted-foreground">Hodiny: </span>
                               <span className="font-medium">{teacherLessons.length} taught</span>
                             </div>
                           </div>

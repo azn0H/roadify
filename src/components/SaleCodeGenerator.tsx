@@ -149,18 +149,18 @@ export function SaleCodeGenerator({ children }: SaleCodeGeneratorProps) {
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Sale Code Management</DialogTitle>
+          <DialogTitle>Slevové kupóny</DialogTitle>
         </DialogHeader>
         
         <div className="grid md:grid-cols-2 gap-6">
           {/* Create New Sale Code */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Generate New Code</CardTitle>
+              <CardTitle className="text-lg">Vygenerovat nový kód</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="discount">Discount Percentage</Label>
+                <Label htmlFor="discount">Sleva v %</Label>
                 <Input
                   id="discount"
                   type="number"
@@ -175,7 +175,7 @@ export function SaleCodeGenerator({ children }: SaleCodeGeneratorProps) {
               </div>
               
               <div>
-                <Label htmlFor="usage">Usage Limit (Optional)</Label>
+                <Label htmlFor="usage">Limit použítí (Optimálně)</Label>
                 <Input
                   id="usage"
                   type="number"
@@ -190,7 +190,7 @@ export function SaleCodeGenerator({ children }: SaleCodeGeneratorProps) {
               </div>
               
               <div>
-                <Label htmlFor="expires">Expires At (Optional)</Label>
+                <Label htmlFor="expires">Datum expirace (Optimálně)</Label>
                 <Input
                   id="expires"
                   type="datetime-local"
@@ -208,7 +208,7 @@ export function SaleCodeGenerator({ children }: SaleCodeGeneratorProps) {
                 className="w-full"
                 variant="automotive"
               >
-                {loading ? 'Creating...' : 'Generate Code'}
+                {loading ? 'Vytvářím...' : 'Vygenerovat kód'}
               </Button>
             </CardContent>
           </Card>
@@ -216,7 +216,7 @@ export function SaleCodeGenerator({ children }: SaleCodeGeneratorProps) {
           {/* Existing Sale Codes */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Active Sale Codes</CardTitle>
+              <CardTitle className="text-lg">Aktivní kódy</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -265,7 +265,7 @@ export function SaleCodeGenerator({ children }: SaleCodeGeneratorProps) {
                 
                 {saleCodes.filter(code => code.is_active).length === 0 && (
                   <p className="text-muted-foreground text-sm text-center py-4">
-                    No active sale codes
+                    Nejsou zde žádné aktivní kódy.
                   </p>
                 )}
               </div>

@@ -187,11 +187,11 @@ export default function Profile() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Profile & Settings</h1>
-              <p className="text-muted-foreground">Manage your account and preferences</p>
+              <h1 className="text-3xl font-bold text-foreground">Nastavení profilu</h1>
+              <p className="text-muted-foreground">Uprav te si svůj profil</p>
             </div>
             <Button variant="outline" onClick={() => navigate('/student-dashboard')}>
-              Back to Dashboard
+              Zpět na Dashboard
             </Button>
           </div>
 
@@ -199,15 +199,15 @@ export default function Profile() {
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="profile" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Profile
+                Profil
               </TabsTrigger>
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
-                Account
+                Nastavaní účtu
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex items-center gap-2">
                 <Bell className="h-4 w-4" />
-                Notifications
+                Notifikace
               </TabsTrigger>
             </TabsList>
 
@@ -216,7 +216,7 @@ export default function Profile() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <User className="h-5 w-5" />
-                    Personal Information
+                    Osobní informace
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -229,13 +229,13 @@ export default function Profile() {
                     </Avatar>
                     <Button variant="outline" size="sm">
                       <Camera className="h-4 w-4 mr-2" />
-                      Change Photo
+                      Upravit avatar
                     </Button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">First Name</Label>
+                      <Label htmlFor="firstName">Jméno</Label>
                       <Input
                         id="firstName"
                         value={profile.first_name || ''}
@@ -243,7 +243,7 @@ export default function Profile() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">Last Name</Label>
+                      <Label htmlFor="lastName">Přijmení</Label>
                       <Input
                         id="lastName"
                         value={profile.last_name || ''}
@@ -265,28 +265,28 @@ export default function Profile() {
                       className="bg-muted"
                     />
                     <p className="text-sm text-muted-foreground">
-                      Email cannot be changed. Contact support if needed.
+                      Email nelze změnit. Pro změnu kontaktujte podporu.
                     </p>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="flex items-center gap-2">
                       <Phone className="h-4 w-4" />
-                      Phone Number
+                      Telefoní číslo
                     </Label>
                     <Input
                       id="phone"
                       type="tel"
                       value={profile.phone_number || ''}
                       onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
-                      placeholder="+1 (555) 123-4567"
+                      placeholder="+420 123 456 789"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="address" className="flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
-                      Address
+                      Adresa
                     </Label>
                     <Textarea
                       id="address"
@@ -319,15 +319,15 @@ export default function Profile() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5" />
-                    Security Settings
+                    Nastavení účtu
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Change Password</h3>
+                    <h3 className="text-lg font-medium">Změna hesla</h3>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="newPassword">New Password</Label>
+                      <Label htmlFor="newPassword">Nové heslo</Label>
                       <div className="relative">
                         <Input
                           id="newPassword"
@@ -353,7 +353,7 @@ export default function Profile() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                      <Label htmlFor="confirmPassword">Potvrdit nové heslo</Label>
                       <Input
                         id="confirmPassword"
                         type={showPasswords ? "text" : "password"}
