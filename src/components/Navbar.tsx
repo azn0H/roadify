@@ -99,24 +99,6 @@ export function Navbar() {
               <DropdownMenuItem>Courses</DropdownMenuItem>
               <DropdownMenuItem>About</DropdownMenuItem>
               <DropdownMenuItem>Contact</DropdownMenuItem>
-              {user ? (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/student-dashboard')}>
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    Sign out
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <DropdownMenuItem onClick={() => navigate('/auth')}>
-                  Login
-                </DropdownMenuItem>
-              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

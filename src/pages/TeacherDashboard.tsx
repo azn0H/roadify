@@ -1,5 +1,6 @@
 import { DashboardCard } from "@/components/DashboardCard";
 import { Button } from "@/components/ui/button";
+import { Settings, LogOut } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,13 +17,25 @@ import {
   BookOpen,
   TrendingUp
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLessons } from "@/hooks/use-lessons";
 import { useUsers } from "@/hooks/use-users";
 import { format } from "date-fns";
+import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 
 export default function TeacherDashboard() {
   const { lessons, lessonsLoading, profile } = useLessons();
   const { students } = useUsers();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const teacherLessons = lessons?.filter(lesson => lesson.teacher_id === profile?.id) || [];
   const todayLessons = teacherLessons?.filter(lesson => 
@@ -33,28 +46,68 @@ export default function TeacherDashboard() {
     teacherLessons.some(lesson => lesson.student_id === student.id)
   ) || [];
 
+    const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Teacher Dashboard</h1>
-            <p className="text-muted-foreground">Good morning{profile?.first_name ? `, ${profile.first_name}` : ''}! Here's your teaching overview.</p>
-          </div>
-          <div className="flex gap-2">
-            <ViewScheduleDialog>
-              <Button variant="outline">
-                View Schedule
-              </Button>
-            </ViewScheduleDialog>
-            <AddNotesDialog lessonId="" currentNotes="">
-              <Button variant="automotive">
-                Add Lesson Notes
-              </Button>
-            </AddNotesDialog>
-          </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">
+            Vítej zpět{profile?.first_name ? ` ${profile.first_name}` : ''}. 👋
+          </h1>
+          <p className="text-muted-foreground">Učitelský dashboard</p>
         </div>
+
+
+        <div className="flex items-center gap-2">
+          <ViewScheduleDialog>
+            <Button variant="automotive">
+              Učitelský Rozvrh
+            </Button>
+          </ViewScheduleDialog>
+
+        {/*  <AddNotesDialog lessonId="" currentNotes="">
+            <Button variant="automotive">
+              Přidat Poznámky
+            </Button>
+          </AddNotesDialog>*/}
+
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                 <Avatar className="h-8 w-8">
+                 <AvatarImage src={profile.avatar_url || ''} />
+                <AvatarFallback>
+               {profile.first_name?.[0]}{profile.last_name?.[0]}
+                </AvatarFallback>
+                </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <div className="flex items-center gap-2 p-2">
+                  <div className="flex flex-col space-y-1 leading-none">
+                    <p className="font-medium">{user.email}</p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Nastavení
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Odhlásit se
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

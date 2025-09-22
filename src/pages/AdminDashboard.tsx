@@ -23,30 +23,47 @@ import {
   PlusCircle,
   Edit,
   Trash2,
-  Ticket
+  Ticket,
+  LogOut
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useUsers } from "@/hooks/use-users";
 import { useCourses } from "@/hooks/use-courses";
 import { useLessons } from "@/hooks/use-lessons";
 import { format } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
   const { users, teachers, deleteUser } = useUsers();
   const { allCourses, deleteCourse } = useCourses();
-  const { lessons } = useLessons();
+  const { lessons, profile } = useLessons();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const recentUsers = users?.slice(0, 3) || [];
   const totalRevenue = 43927; // This would come from actual payment data
   const totalBookings = lessons?.length || 0;
 
+   const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground"> Vítej zpět,{profile?.first_name ? ` ${profile.first_name}` : ''}. 👋</h1>
             <p className="text-muted-foreground">
-              Komplexní přehled činnosti autoškoly Rodify.
+              Admin dashboard
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -68,7 +85,38 @@ export default function AdminDashboard() {
                 Přidat uživatele
               </Button>
             </AddUserDialog>
-          </div>
+             {user && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="relative h-8 w-8 rounded-full self-center">
+                              <Avatar className="h-8 w-8">
+                            <AvatarImage src={profile.avatar_url || ''} />
+                            <AvatarFallback>
+                              {profile.first_name?.[0]}{profile.last_name?.[0]}
+                            </AvatarFallback>
+                              </Avatar>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56" align="end" forceMount>
+                            <div className="flex items-center gap-2 p-2">
+                              <div className="flex flex-col space-y-1 leading-none">
+                                <p className="font-medium">{user.email}</p>
+                              </div>
+                            </div>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => navigate('/profile')}>
+                              <Settings className="mr-2 h-4 w-4" />
+                              Nastavení
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={handleSignOut}>
+                              <LogOut className="mr-2 h-4 w-4" />
+                              Odhlásit se
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
         </div>
 
         {/* Stats Grid */}
@@ -104,11 +152,12 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full lg:w-[600px] grid-cols-4">
+          <TabsList className="grid w-full lg:w-[700px] grid-cols-5">
             <TabsTrigger value="overview">Přehled</TabsTrigger>
-            <TabsTrigger value="users">Uživatelé</TabsTrigger>
+            <TabsTrigger value="users">Všichni uživatelé</TabsTrigger>
             <TabsTrigger value="courses">Kurzy</TabsTrigger>
             <TabsTrigger value="teachers">Učitelé</TabsTrigger>
+            <TabsTrigger value="students">Studenti</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -354,6 +403,64 @@ export default function AdminDashboard() {
                             <div>
                               <span className="text-muted-foreground">Hodiny: </span>
                               <span className="font-medium">{teacherLessons.length} taught</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }) || []}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+                    <TabsContent value="students" className="space-y-6">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Car className="h-5 w-5 text-primary" />
+                  Studenti
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">Všichni studenti</h4>
+                    <AddUserDialog>
+                      <Button size="sm" variant="automotive">
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                        Přidat studenta
+                      </Button>
+                    </AddUserDialog>
+                  </div>
+                  <div className="space-y-4">
+                    {teachers?.map((student, index) => {
+                      const teacherLessons = lessons?.filter(lesson => lesson.teacher_id === student.id) || [];
+                      const teacherStudents = users?.filter(user => 
+                        user.role === 'student' && teacherLessons.some(lesson => lesson.student_id === user.id)
+                      ) || [];
+                      
+                      return (
+                        <div key={student.id} className="p-4 bg-muted/30 rounded-lg">
+                          <div className="flex items-center justify-between mb-3">
+                            <h5 className="font-semibold">{student.first_name} {student.last_name}</h5>
+                            <div className="flex items-center gap-2">
+                              
+                              <EditUserDialog user={student}>
+                                <Button size="sm" variant="ghost">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </EditUserDialog>
+                            </div>
+                          </div>
+                          <div className="grid md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <span className="text-muted-foreground">Studenti: </span>
+                              <span className="font-medium">{student.email}</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Kurz: </span>
+                              <span className="font-medium">{}</span>
                             </div>
                           </div>
                         </div>
