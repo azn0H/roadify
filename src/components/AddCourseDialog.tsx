@@ -51,20 +51,20 @@ export function AddCourseDialog({ children }: AddCourseDialogProps) {
         {children || (
           <Button size="sm" variant="automotive">
             <PlusCircle className="h-4 w-4 mr-2" />
-            Add Course
+            Přidat kurz
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Course</DialogTitle>
+          <DialogTitle>Přidat nový kurz</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Course Name</Label>
+            <Label htmlFor="name">Název kurzu</Label>
             <Input
               id="name"
-              placeholder="Enter course name"
+              placeholder="Vložte název kurzu"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -72,10 +72,10 @@ export function AddCourseDialog({ children }: AddCourseDialogProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Popisek</Label>
             <Textarea
               id="description"
-              placeholder="Enter course description (optional)"
+              placeholder="Vložte popisek kurzu (Volitelné)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -83,12 +83,12 @@ export function AddCourseDialog({ children }: AddCourseDialogProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="price">Price ($)</Label>
+            <Label htmlFor="price">Cena (kč)</Label>
             <Input
               id="price"
               type="number"
               step="0.01"
-              placeholder="0.00"
+              placeholder="0"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               required
@@ -96,11 +96,11 @@ export function AddCourseDialog({ children }: AddCourseDialogProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="duration">Duration (Hours)</Label>
+            <Label htmlFor="duration">Délka (Hodiny)</Label>
             <Input
               id="duration"
               type="number"
-              placeholder="Enter duration in hours"
+              placeholder="Vložte délku v hodinách"
               value={durationHours}
               onChange={(e) => setDurationHours(e.target.value)}
               required
@@ -120,7 +120,7 @@ export function AddCourseDialog({ children }: AddCourseDialogProps) {
               variant="automotive"
               disabled={createCourse.isPending}
             >
-              {createCourse.isPending ? "Creating..." : "Create Course"}
+              {createCourse.isPending ? "Vytvářím..." : "Vytvořit kurz"}
             </Button>
           </div>
         </form>

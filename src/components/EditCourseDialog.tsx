@@ -48,11 +48,11 @@ export function EditCourseDialog({ course, children }: EditCourseDialogProps) {
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Course</DialogTitle>
+          <DialogTitle>Upravit kuzr</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Course Name</Label>
+            <Label htmlFor="name">Název kurzu</Label>
             <Input
               id="name"
               value={formData.name}
@@ -62,7 +62,7 @@ export function EditCourseDialog({ course, children }: EditCourseDialogProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Popisek</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -73,7 +73,7 @@ export function EditCourseDialog({ course, children }: EditCourseDialogProps) {
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="price">Cena (Kč)</Label>
               <Input
                 id="price"
                 type="number"
@@ -86,7 +86,7 @@ export function EditCourseDialog({ course, children }: EditCourseDialogProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="duration">Duration (hours)</Label>
+              <Label htmlFor="duration">Délka (hodiny)</Label>
               <Input
                 id="duration"
                 type="number"
@@ -99,7 +99,7 @@ export function EditCourseDialog({ course, children }: EditCourseDialogProps) {
           </div>
           
           <div className="flex items-center justify-between">
-            <Label htmlFor="active">Course Active</Label>
+            <Label htmlFor="active">Aktivní kurz</Label>
             <Switch
               id="active"
               checked={formData.is_active}
@@ -109,10 +109,10 @@ export function EditCourseDialog({ course, children }: EditCourseDialogProps) {
           
           <div className="flex gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
-              Cancel
+              Zrušit
             </Button>
             <Button type="submit" variant="automotive" className="flex-1" disabled={updateCourse.isPending}>
-              {updateCourse.isPending ? "Updating..." : "Update Course"}
+              {updateCourse.isPending ? "Upravuju..." : "Upravit kurz"}
             </Button>
           </div>
         </form>
