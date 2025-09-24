@@ -13,20 +13,35 @@ import {
   BookOpen,
   CheckCircle,
   AlertCircle,
-  Plus
+  Plus,
+  Settings,
+  LogOut
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useLessons } from "@/hooks/use-lessons";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function StudentDashboard() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { lessons, lessonsLoading, profile } = useLessons();
   const [userCourse, setUserCourse] = useState(null);
   const [courseLoading, setCourseLoading] = useState(true);
-
+  const navigate = useNavigate();
+  
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
   useEffect(() => {
     fetchUserCourse();
   }, [user]);
@@ -66,20 +81,52 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
           <div>
           <h1 className="text-3xl font-bold text-foreground">
             Zdravíme,{profile?.first_name ? ` ${profile.first_name}` : ''} 👋
           </h1>
             <p className="text-muted-foreground">Vítej na Studentském dashboardu</p>
           </div>
+                  <div className="flex items-center gap-2">
           <BookLessonDialog>
             <Button variant="automotive">
               <Plus className="h-4 w-4 mr-2" />
               Book New Lesson
             </Button>
           </BookLessonDialog>
+          {user && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                           <Avatar className="h-8 w-8">
+                           <AvatarImage src={profile.avatar_url || ''} />
+                          <AvatarFallback>
+                         {profile.first_name?.[0]}{profile.last_name?.[0]}
+                          </AvatarFallback>
+                          </Avatar>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end" forceMount>
+                          <div className="flex items-center gap-2 p-2">
+                            <div className="flex flex-col space-y-1 leading-none">
+                              <p className="font-medium">{user.email}</p>
+                            </div>
+                          </div>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => navigate('/profile')}>
+                            <Settings className="mr-2 h-4 w-4" />
+                            Nastavení
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={handleSignOut}>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Odhlásit se
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+        </div>
         </div>
 
         {/* Stats Grid */}

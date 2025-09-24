@@ -56,6 +56,10 @@ export function BookLessonDialog({ children }: BookLessonDialogProps) {
     }
   };
 
+  function formatPrice(price: number) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -80,7 +84,7 @@ export function BookLessonDialog({ children }: BookLessonDialogProps) {
               <SelectContent>
                 {courses.map((course) => (
                   <SelectItem key={course.id} value={course.id}>
-                    {course.name} - ${course.price}
+                    {course.name} - {formatPrice(course.price)} Kč
                   </SelectItem>
                 ))}
               </SelectContent>
