@@ -69,8 +69,10 @@ export default function StudentDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Student Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}! Track your progress and manage your lessons.</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            Zdravíme,{profile?.first_name ? ` ${profile.first_name}` : ''} 👋
+          </h1>
+            <p className="text-muted-foreground">Vítej na Studentském dashboardu</p>
           </div>
           <BookLessonDialog>
             <Button variant="automotive">

@@ -56,9 +56,9 @@ export default function TeacherDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Vítej zpět{profile?.first_name ? ` ${profile.first_name}` : ''}. 👋
+            Zdravíme,{profile?.first_name ? ` ${profile.first_name}` : ''} 👋
           </h1>
-          <p className="text-muted-foreground">Učitelský dashboard</p>
+          <p className="text-muted-foreground">Vítej na Učitelském dashboardu</p>
         </div>
 
 

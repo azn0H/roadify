@@ -61,9 +61,11 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground"> Vítej zpět,{profile?.first_name ? ` ${profile.first_name}` : ''}. 👋</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Zdravíme,{profile?.first_name ? ` ${profile.first_name}` : ''} 👋
+          </h1>
             <p className="text-muted-foreground">
-              Admin dashboard
+              Vítej na Admin dashboardu
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
