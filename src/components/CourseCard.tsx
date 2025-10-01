@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Users, Star } from "lucide-react";
+import { useLanguage } from "@/hooks/use-language";
 
 interface CourseCardProps {
   title: string;
@@ -24,11 +25,13 @@ export function CourseCard({
   instructor,
   isPopular = false
 }: CourseCardProps) {
+  const { t } = useLanguage();
+  
   return (
     <Card className="relative h-full shadow-card hover:shadow-hero transition-all duration-300 hover:-translate-y-1">
       {isPopular && (
         <Badge className="absolute -top-3 left-6 bg-accent text-accent-foreground">
-          Most Popular
+          {t('courses.popular')}
         </Badge>
       )}
       
@@ -53,11 +56,11 @@ export function CourseCard({
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
-            {lessons} lessons included
+            {lessons} {t('courses.lessons').toLowerCase()}
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
-            Instructor: {instructor}
+            {t('courses.instructor')}: {instructor}
           </div>
         </div>
       </CardContent>
@@ -67,7 +70,7 @@ export function CourseCard({
           variant={isPopular ? "automotive" : "default"} 
           className="w-full"
         >
-          Enroll Now
+          {t('nav.getStarted')}
         </Button>
       </CardFooter>
     </Card>

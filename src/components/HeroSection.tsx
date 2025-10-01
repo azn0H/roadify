@@ -3,11 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Star, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/hooks/use-language";
 import heroImage from "@/assets/hero-image.jpg";
 
 export function HeroSection() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   const handleGetStarted = () => {
     if (user) {
@@ -33,40 +35,38 @@ export function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <Badge className="bg-accent/10 text-accent hover:bg-accent/20 border-accent/20">
-              🚗 Professional Driving School
+              🚗 {t('hero.badge')}
             </Badge>
             
             <h1 className="text-4xl md:text-6xl font-bold leading-tight text-foreground">
-              Master the Road with 
-              <span className="text-primary block">Expert Instructors</span>
+              {t('hero.title')}
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-lg">
-              Professional driving lessons with certified instructors. 
-              Learn at your own pace with flexible scheduling and comprehensive training.
+              {t('hero.subtitle')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="lg" className="text-lg px-8 py-6" onClick={handleGetStarted}>
-                {user ? "Go to Dashboard" : "Start Learning Today"}
+                {user ? t('cta.goToDashboard') : t('hero.bookLesson')}
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-8 py-6">
-                View Courses
+                {t('hero.learnMore')}
               </Button>
             </div>
             
             <div className="flex items-center gap-8 pt-8">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                <span className="text-sm text-muted-foreground">500+ Students</span>
+                <span className="text-sm text-muted-foreground">500+ {t('hero.students')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-accent fill-current" />
-                <span className="text-sm text-muted-foreground">4.9/5 Rating</span>
+                <span className="text-sm text-muted-foreground">4.9/5 {t('hero.rating')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-primary" />
-                <span className="text-sm text-muted-foreground">95% Pass Rate</span>
+                <span className="text-sm text-muted-foreground">95% {t('hero.passRate')}</span>
               </div>
             </div>
           </div>
@@ -77,11 +77,10 @@ export function HeroSection() {
                 <h3 className="text-2xl font-bold mb-6 text-card-foreground">Why Choose Rodify?</h3>
                 <div className="space-y-4">
                   {[
-                    "Certified Professional Instructors",
-                    "Flexible Scheduling System", 
-                    "Comprehensive Theory & Practice",
-                    "Modern Training Vehicles",
-                    "Personalized Learning Plans"
+                    t('hero.certified'),
+                    t('hero.flexible'), 
+                    t('features.safety.title'),
+                    t('hero.modern'),
                   ].map((feature, index) => (
                     <div key={index} className="flex items-center gap-3">
                       <CheckCircle className="h-5 w-5 text-primary" />

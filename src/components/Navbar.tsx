@@ -8,12 +8,15 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/hooks/use-language";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Navbar() {
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -31,17 +34,18 @@ export function Navbar() {
         
         <div className="hidden md:flex items-center space-x-6">
           <a href="#courses" className="text-sm font-medium hover:text-primary transition-colors">
-            Courses
+            {t('nav.courses')}
           </a>
           <a href="#about" className="text-sm font-medium hover:text-primary transition-colors">
-            About
+            {t('nav.about')}
           </a>
           <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">
-            Contact
+            {t('nav.contact')}
           </a>
         </div>
 
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
           
           {user ? (
@@ -64,26 +68,26 @@ export function Navbar() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate('/student-dashboard')}>
-                  Dashboard
+                  {t('nav.dashboard')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/profile')}>
                   <Settings className="mr-2 h-4 w-4" />
-                  Profile & Settings
+                  {t('nav.profile')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
+                  {t('nav.signOut')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <>
               <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
-                Login
+                {t('nav.login')}
               </Button>
               <Button variant="automotive" size="sm" onClick={() => navigate('/auth')}>
-                Get Started
+                {t('nav.getStarted')}
               </Button>
             </>
           )}
@@ -96,9 +100,9 @@ export function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>Courses</DropdownMenuItem>
-              <DropdownMenuItem>About</DropdownMenuItem>
-              <DropdownMenuItem>Contact</DropdownMenuItem>
+              <DropdownMenuItem>{t('nav.courses')}</DropdownMenuItem>
+              <DropdownMenuItem>{t('nav.about')}</DropdownMenuItem>
+              <DropdownMenuItem>{t('nav.contact')}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
