@@ -149,7 +149,11 @@ const translations = {
     'contact.address': 'Centrum, Město 12345',
     
     // Footer
-    'footer.rights': '© 2024 Autoškola Rodify. Všechna práva vyhrazena.',
+    'footer.rights': '© 2025 Autoškola Rodify. Všechna práva vyhrazena.',
+
+    // Login
+    'login.welcome': 'Vítejte v administračním panelu Rodify',
+
   },
 };
 

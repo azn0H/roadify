@@ -1,6 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
 
 /* Rodify Driving School Design System 
 Professional automotive theme with trust-building elements
@@ -13,57 +18,52 @@ All colors MUST be HSL.
     --background: 0 0% 100%;
     --foreground: 213 31% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 213 31% 15%;
+    --card: 104 64% 94%;
+    --card-foreground: 186 96% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 213 31% 15%;
+    --popover: 104 64% 94%;
+    --popover-foreground: 186 96% 10%;
 
-    /* Automotive blue primary */
-    --primary: 213 94% 48%;
+    --primary: 147 39% 48%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 213 94% 42%;
+    --primary-hover: 147 39% 40%;
 
-    /* Trust-building secondary */
-    --secondary: 213 27% 84%;
-    --secondary-foreground: 213 31% 15%;
+    --secondary: 106 54% 82%;
+    --secondary-foreground: 186 96% 10%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 106 54% 90%;
+    --muted-foreground: 147 39% 40%;
 
-    /* Safety orange accent */
     --accent: 25 95% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 213 94% 48%;
+    --border: 106 54% 75%;
+    --input: 106 54% 75%;
+    --ring: 147 39% 48%;
 
     --radius: 0.75rem;
 
-    /* Automotive gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(213, 94%, 48%), hsl(213, 94%, 62%));
-    --gradient-secondary: linear-gradient(135deg, hsl(220, 14%, 96%), hsl(213, 27%, 84%));
-    --gradient-hero: linear-gradient(135deg, hsl(213, 94%, 48%) 0%, hsl(213, 94%, 38%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(147, 39%, 48%), hsl(147, 39%, 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(106, 54%, 90%), hsl(106, 54%, 82%));
+    --gradient-hero: linear-gradient(135deg, hsl(147, 39%, 48%) 0%, hsl(147, 39%, 38%) 100%);
 
-    /* Shadows */
-    --shadow-card: 0 4px 20px -2px hsl(213 94% 48% / 0.08);
-    --shadow-button: 0 8px 25px -8px hsl(213 94% 48% / 0.4);
-    --shadow-hero: 0 20px 60px -12px hsl(213 94% 48% / 0.3);
+    --shadow-card: 0 4px 20px -2px hsl(147 39% 48% / 0.08);
+    --shadow-button: 0 8px 25px -8px hsl(147 39% 48% / 0.4);
+    --shadow-hero: 0 20px 60px -12px hsl(147 39% 48% / 0.3);
 
-    /* Sidebar automotive theme */
-    --sidebar-background: 213 31% 15%;
-    --sidebar-foreground: 220 14% 96%;
-    --sidebar-primary: 213 94% 48%;
+    --sidebar-background: 186 96% 10%;
+    --sidebar-foreground: 104 64% 94%;
+    --sidebar-primary: 147 39% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 213 31% 20%;
-    --sidebar-accent-foreground: 220 14% 96%;
-    --sidebar-border: 213 31% 25%;
-    --sidebar-ring: 213 94% 48%;
+    --sidebar-accent: 186 96% 14%;
+    --sidebar-accent-foreground: 104 64% 94%;
+    --sidebar-border: 186 96% 20%;
+    --sidebar-ring: 147 39% 48%;
   }
+
 
   .dark {
     --background: 213 31% 8%;

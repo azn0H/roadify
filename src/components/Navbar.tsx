@@ -83,12 +83,13 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
-                {t('nav.login')}
-              </Button>
-              <Button variant="automotive" size="sm" onClick={() => navigate('/auth')}>
-                {t('nav.getStarted')}
-              </Button>
+<Button className="btn-ghost" size="sm" onClick={() => navigate('/auth')}>
+  {t('nav.login')}
+</Button>
+<Button className="btn-automotive" size="sm" onClick={() => navigate('/auth')}>
+  {t('nav.getStarted')}
+</Button>
+
             </>
           )}
           
