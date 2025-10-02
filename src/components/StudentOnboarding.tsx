@@ -465,10 +465,12 @@ Email: info@drivingschool.com
                             className="hidden"
                             id="document-upload"
                           />
-                          <label htmlFor="document-upload">
-                            <Button variant="outline" className="cursor-pointer">
-                              <Upload className="h-4 w-4 mr-2" />
-                              Choose Files
+                          <label htmlFor="document-upload" className="cursor-pointer">
+                            <Button variant="outline" type="button" asChild>
+                              <span>
+                                <Upload className="h-4 w-4 mr-2" />
+                                Choose Files
+                              </span>
                             </Button>
                           </label>
                           {uploadedFile && (
