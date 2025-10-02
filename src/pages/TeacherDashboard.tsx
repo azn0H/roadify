@@ -27,6 +27,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLessons } from "@/hooks/use-lessons";
 import { useUsers } from "@/hooks/use-users";
+import { useApprovals } from "@/hooks/use-approvals";
+import { AccountApprovalCard } from "@/components/AccountApprovalCard";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 export default function TeacherDashboard() {
   const { lessons, lessonsLoading, profile } = useLessons();
   const { students } = useUsers();
+  const { pendingApprovals, approvalsLoading } = useApprovals();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -139,8 +142,9 @@ export default function TeacherDashboard() {
         </div>
 
         <Tabs defaultValue="today" className="space-y-6">
-          <TabsList className="grid w-full lg:w-[400px] grid-cols-3">
+          <TabsList className="grid w-full lg:w-[550px] grid-cols-4">
             <TabsTrigger value="today">Today's Schedule</TabsTrigger>
+            <TabsTrigger value="approvals">Schválení účtů</TabsTrigger>
             <TabsTrigger value="students">My Students</TabsTrigger>
             <TabsTrigger value="requests">Requests</TabsTrigger>
           </TabsList>
@@ -189,6 +193,35 @@ export default function TeacherDashboard() {
                     </div>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="approvals" className="space-y-6">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  Schválení účtů
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {approvalsLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="mt-2 text-muted-foreground">Načítání...</p>
+                  </div>
+                ) : pendingApprovals.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Žádné účty čekající na schválení
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {pendingApprovals.map((student) => (
+                      <AccountApprovalCard key={student.id} student={student} />
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
