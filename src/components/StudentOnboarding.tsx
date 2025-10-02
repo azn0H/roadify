@@ -53,7 +53,43 @@ export function StudentOnboarding() {
 
   useEffect(() => {
     fetchUserCourse();
+    handlePaymentSuccess();
   }, [user]);
+
+  const handlePaymentSuccess = async () => {
+    if (!user) return;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+      // Update payment status in database
+      const { error } = await supabase
+        .from('user_courses')
+        .update({ 
+          payment_status: 'paid',
+          onboarding_step: 3
+        })
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error updating payment status:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update payment status",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Payment successful!",
+          description: "You can now upload your documents.",
+        });
+        // Clear the URL parameter
+        window.history.replaceState({}, '', '/student-dashboard');
+        fetchUserCourse();
+      }
+    }
+  };
 
   const fetchUserCourse = async () => {
     if (!user) return;
