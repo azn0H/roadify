@@ -76,8 +76,8 @@ export default function Auth() {
         setFirstName("");
         setLastName("");
         setPhone("");
-        alert("Account created! Please verify your email.");
       }
+      // Error is already handled by useAuth hook with toast
     } else {
       const { error } = await signIn(email, password);
       if (!error) {
