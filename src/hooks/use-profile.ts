@@ -29,12 +29,16 @@ export function useProfile() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+      }
       return data;
     },
     enabled: !!user?.id,
+    retry: 2,
   });
 
   return {

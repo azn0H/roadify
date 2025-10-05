@@ -25,7 +25,31 @@ export default function Auth() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) navigate("/student-dashboard");
+    const redirectUser = async () => {
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          switch (profile.role) {
+            case 'admin':
+              navigate('/admin-dashboard');
+              break;
+            case 'teacher':
+              navigate('/teacher-dashboard');
+              break;
+            case 'student':
+            default:
+              navigate('/student-dashboard');
+              break;
+          }
+        }
+      }
+    };
+    redirectUser();
   }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +80,9 @@ export default function Auth() {
       }
     } else {
       const { error } = await signIn(email, password);
-      if (!error) navigate("/student-dashboard");
+      if (!error) {
+        // Redirect will be handled by useEffect
+      }
     }
 
     setLoading(false);
