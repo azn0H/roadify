@@ -98,11 +98,11 @@ export default function StudentDashboard() {
           {user && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                            <Avatar className="h-8 w-8">
-                           <AvatarImage src={profile.avatar_url || ''} />
+                           <AvatarImage src={profile?.avatar_url || ''} />
                           <AvatarFallback>
-                         {profile.first_name?.[0]}{profile.last_name?.[0]}
+                         {profile?.first_name?.[0]}{profile?.last_name?.[0]}
                           </AvatarFallback>
                           </Avatar>
                           </Button>
