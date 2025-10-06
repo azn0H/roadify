@@ -70,7 +70,8 @@ export function useApprovals() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { error } = await supabase
+      // Update profile with rejection
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({
           approval_status: 'rejected',
@@ -80,7 +81,20 @@ export function useApprovals() {
         })
         .eq('id', userId);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Create notification for the student
+      const { error: notificationError } = await supabase
+        .from('notifications')
+        .insert({
+          user_id: userId,
+          title: 'Účet nebyl schválen',
+          message: `Váš účet nebyl schválen. Důvod: ${reason}. Prosím nahrajte nové dokumenty.`,
+          type: 'rejection',
+          is_read: false,
+        });
+
+      if (notificationError) throw notificationError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-approvals'] });

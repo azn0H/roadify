@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { BookLessonDialog } from "@/components/BookLessonDialog";
 import { RescheduleDialog } from "@/components/RescheduleDialog";
 import { StudentOnboarding } from "@/components/StudentOnboarding";
+import { RejectionNotice } from "@/components/RejectionNotice";
 import { 
   Calendar,
   Clock,
@@ -128,6 +129,14 @@ export default function StudentDashboard() {
                     )}
         </div>
         </div>
+
+        {/* Show rejection notice if account is rejected */}
+        {profile?.approval_status === 'rejected' && profile?.rejection_reason && user && (
+          <RejectionNotice 
+            rejectionReason={profile.rejection_reason} 
+            userId={user.id}
+          />
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
