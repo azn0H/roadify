@@ -6,12 +6,14 @@ import googleLogo from "@/images/google-icon.svg";
 import facebookLogo from "@/images/facebook-icon.svg";
 import { Eye, EyeOff } from "lucide-react";
 import { Car, Home } from "lucide-react";
-
+import { useLanguage } from "@/hooks/use-language";
+import loginImage from "@/assets/login-image.jpg";
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -97,12 +99,12 @@ export default function Auth() {
                     <div className="flex justify-center">
           <Car className="h-24 w-24 text-primary" />
           </div>
-          <span className="text-4xl font-bold text-foreground">Rodify</span>
+          <span className="text-4xl font-bold text-foreground">Roadify</span>
             <h2 className="text-2xl font-extrabold text-gray-900">
-              {isSignUp ? "Create an account" : "Welcome back"}
+              {isSignUp ? t('login.title') : t('login.title')}
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              {isSignUp ? "Sign up to get started" : "Sign in to your account"}
+              {isSignUp ? t('login.sign_up.acc') : t('login.sign_in.acc')}
             </p>
           </div>
 
@@ -116,7 +118,7 @@ export default function Auth() {
               }}
             >
               <img src={googleLogo} alt="Google" className="w-5 h-5" />
-              {isSignUp ? "Sign up with Google" : "Sign in with Google"}
+              {isSignUp ?  t('login.sign_up.google') : t('login.sign_in.google')}
             </button>
 
             <button
@@ -133,7 +135,7 @@ export default function Auth() {
 
 <div className="my-6 flex items-center">
   <div className="flex-grow h-px bg-gray-300"></div>
-  <span className="mx-4 text-gray-500 text-sm">or with email</span>
+  <span className="mx-4 text-gray-500 text-sm"> {t('login.email')} </span>
   <div className="flex-grow h-px bg-gray-300"></div>
 </div>
 
@@ -147,7 +149,7 @@ export default function Auth() {
   <div>
     <input
       type="text"
-      placeholder="First Name"
+      placeholder={t('first_name')}
       className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm"
       value={firstName}
       onChange={(e) => setFirstName(e.target.value)}
@@ -157,7 +159,7 @@ export default function Auth() {
   <div className="flex justify-end">
     <input
       type="text"
-      placeholder="Last Name"
+      placeholder={t('last_name')}
       className="w-full max-w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm"
       value={lastName}
       onChange={(e) => setLastName(e.target.value)}
@@ -169,7 +171,7 @@ export default function Auth() {
 
                 <input
                   type="tel"
-                  placeholder="Phone Number"
+                  placeholder={t('phone')}
                   className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -179,7 +181,7 @@ export default function Auth() {
 
             <input
               type="email"
-              placeholder="Email"
+              placeholder={t('email')}
               className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -189,7 +191,7 @@ export default function Auth() {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password"
+                placeholder={t('password')}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -207,7 +209,7 @@ export default function Auth() {
             {isSignUp && (
               <input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder={t('confirm_password')}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -215,17 +217,18 @@ export default function Auth() {
               />
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition"
-            >
-              {loading ? "Processing..." : isSignUp ? "Create Account" : "Sign In"}
-            </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 bg-primary hover:brightness-90 text-white font-semibold rounded-lg transition"
+        >
+          {loading ? t('loading') : isSignUp ? t('register') : t('login')}
+        </button>
+
           </form>
 
           <p className="text-center text-sm text-gray-600 mt-6">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+            {isSignUp ? t('have_account') : t('no_account')}{" "}
 <button
   onClick={() => setIsSignUp(!isSignUp)}
   className="hover:underline"
@@ -236,7 +239,7 @@ export default function Auth() {
   onMouseEnter={e => (e.currentTarget.style.color = 'hsl(var(--primary-hover))')}
   onMouseLeave={e => (e.currentTarget.style.color = 'hsl(var(--primary))')}
 >
-  {isSignUp ? "Sign In" : "Sign Up"}
+  {isSignUp ? t('login') : t('register')}
 </button>
 
           </p>
@@ -245,24 +248,23 @@ export default function Auth() {
   <div className="mt-6 text-center text-xs text-gray-500 space-y-2">
     <div className="flex justify-center gap-4 flex-wrap">
       <a href="/terms" className="hover:underline">Obchodní podmínky</a>
-      <a href="/kontakt" className="hover:underline">Kontakt</a>
+      <a href="https://aznoh.cz/#contact" className="hover:underline">Kontakt</a>
     </div>
     <div>
       Version: <span className="font-mono">{import.meta.env.VITE_APP_VERSION || "dev"}</span>
     </div>
     <div>
-      © 2025 <span className="font-semibold">Rodify</span>
+      © 2025 <span className="font-semibold">Roadify</span>
     </div>
   </div>
       </div>
 
       {/* Right - Image */}
-      <div className="hidden lg:block lg:w-1/2 bg-indigo-100">
+      <div className="hidden lg:block lg:w-1/2 bg-gray-50">
         <div
           className="w-full h-full bg-center bg-no-repeat bg-contain"
           style={{
-            backgroundImage:
-              "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')",
+            backgroundImage: `url(${loginImage})`,
           }}
         ></div>
       </div>   

@@ -29,7 +29,7 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <Car className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold text-foreground">Rodify</span>
+          <span className="text-2xl font-bold text-foreground">Roadify</span>
         </div>
         
         <div className="hidden md:flex items-center space-x-6">

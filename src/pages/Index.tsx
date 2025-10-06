@@ -201,7 +201,7 @@ const Index = () => {
               {
                 icon: <Mail className="h-8 w-8 text-primary" />,
                 title: t('contact.email'), 
-                details: "info@rodify.com",
+                details: "info@Roadify.com",
                 subtitle: t('contact.emailResponse')
               },
               {
@@ -236,7 +236,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
               <GraduationCap className="h-8 w-8 text-sidebar-primary" />
-              <span className="text-2xl font-bold text-sidebar-foreground">Rodify</span>
+              <span className="text-2xl font-bold text-sidebar-foreground">Roadify</span>
             </div>
             <p className="text-sidebar-foreground/70 text-center md:text-right">
               {t('footer.rights')}

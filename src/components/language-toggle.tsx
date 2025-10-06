@@ -21,16 +21,16 @@ export function LanguageToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem 
-          onClick={() => setLanguage('en')}
-          className={language === 'en' ? 'bg-accent/10' : ''}
-        >
-          English
-        </DropdownMenuItem>
-        <DropdownMenuItem 
           onClick={() => setLanguage('cs')}
           className={language === 'cs' ? 'bg-accent/10' : ''}
         >
           Čeština
+        </DropdownMenuItem>
+         <DropdownMenuItem 
+          onClick={() => setLanguage('en')}
+          className={language === 'en' ? 'bg-accent/10' : ''}
+        >
+          English
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

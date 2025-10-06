@@ -74,7 +74,7 @@ export function HeroSection() {
           <div className="hidden lg:block">
             <div className="relative">
               <div className="bg-card rounded-2xl shadow-card p-8 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-6 text-card-foreground">Why Choose Rodify?</h3>
+                <h3 className="text-2xl font-bold mb-6 text-card-foreground">Why Choose Roadify?</h3>
                 <div className="space-y-4">
                   {[
                     t('hero.certified'),

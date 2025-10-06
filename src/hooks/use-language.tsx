@@ -49,7 +49,7 @@ const translations = {
     'courses.instructor': 'Instructor',
     
     // Features Section
-    'features.title': 'Why Students Choose Rodify',
+    'features.title': 'Why Students Choose Roadify',
     'features.subtitle': 'Experience the difference with our professional approach to driving education',
     'features.expert.title': 'Expert Instructors',
     'features.expert.description': 'Certified professionals with years of teaching experience',
@@ -62,7 +62,7 @@ const translations = {
     
     // CTA Section
     'cta.title': 'Ready to Start Your Driving Journey?',
-    'cta.subtitle': 'Join hundreds of successful students who learned to drive with confidence at Rodify.',
+    'cta.subtitle': 'Join hundreds of successful students who learned to drive with confidence at Roadify.',
     'cta.bookFirst': 'Book Your First Lesson',
     'cta.goToDashboard': 'Go to Dashboard',
     'cta.contact': 'Contact Us',
@@ -78,7 +78,7 @@ const translations = {
     'contact.address': 'Downtown, City 12345',
     
     // Footer
-    'footer.rights': '© 2024 Rodify Driving School. All rights reserved.',
+    'footer.rights': '© 2024 Roadify Driving School. All rights reserved.',
   },
   cs: {
     // Navbar
@@ -120,7 +120,7 @@ const translations = {
     'courses.instructor': 'Instruktor',
     
     // Features Section
-    'features.title': 'Proč si studenti vybírají Rodify',
+    'features.title': 'Proč si studenti vybírají Roadify',
     'features.subtitle': 'Zažijte rozdíl s naším profesionálním přístupem k výuce řízení',
     'features.expert.title': 'Odborní Instruktoři',
     'features.expert.description': 'Certifikovaní profesionálové s mnohaletými zkušenostmi s výukou',
@@ -133,7 +133,7 @@ const translations = {
     
     // CTA Section
     'cta.title': 'Připraveni začít vaši cestu řízení?',
-    'cta.subtitle': 'Připojte se ke stovkám úspěšných studentů, kteří se naučili řídit s jistotou v Rodify.',
+    'cta.subtitle': 'Připojte se ke stovkám úspěšných studentů, kteří se naučili řídit s jistotou v Roadify.',
     'cta.bookFirst': 'Rezervovat první lekci',
     'cta.goToDashboard': 'Přejít na nástěnku',
     'cta.contact': 'Kontaktujte nás',
@@ -149,11 +149,29 @@ const translations = {
     'contact.address': 'Centrum, Město 12345',
     
     // Footer
-    'footer.rights': '© 2025 Autoškola Rodify. Všechna práva vyhrazena.',
+    'footer.rights': '© 2024 Autoškola Roadify. Všechna práva vyhrazena.',
 
-    // Login
-    'login.welcome': 'Vítejte v administračním panelu Rodify',
+    // Courses Section
+    'login.title': 'Vítejte v administraci Roadify',
+    'login.subtitle': 'Přihlásit se ke svému účtu',
+    'login.sign_in.acc': 'Přihlásit se ke svému účtu',
+    'login.sign_up.acc': 'Zaregistrovat se do nového účtu',
+    'login.sign_in.google': 'Přihlásit se pomocí Google',
+    'login.sign_up.google': 'Zaregistrovat se pomocí Google',
+    'login.email': 'Nebo pomocí e-mailu',
+    'email': 'Email',
+    'password': 'Heslo',
+    'login': 'Přihlásit se',
+    'register': 'Zaregistrovat se',
+    'first_name': 'Jméno',
+    'last_name': 'Příjmení',
+    'phone': 'Telefonní číslo',
+    'confirm_password': 'Potvrďte heslo',
+    'have_account': 'Už máte účet?',
+    'no_account': 'Ještě nemáte účet?',
 
+    'loading': 'Načítání...',
+    
   },
 };
 
@@ -161,13 +179,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('rodify-language');
+    const saved = localStorage.getItem('Roadify-language');
     return (saved as Language) || 'cs';
   });
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem('rodify-language', lang);
+    localStorage.setItem('Roadify-language', lang);
     document.documentElement.lang = lang;
   };
 

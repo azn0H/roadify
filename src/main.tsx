@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ThemeProvider defaultTheme="system" storageKey="rodify-ui-theme">
+        <ThemeProvider defaultTheme="system" storageKey="Roadify-ui-theme">
           <LanguageProvider>
             <AuthProvider>
               <TooltipProvider>

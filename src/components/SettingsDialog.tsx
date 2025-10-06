@@ -27,9 +27,9 @@ interface SettingsDialogProps {
 export function SettingsDialog({ children }: SettingsDialogProps) {
   const { toast } = useToast();
   const [settings, setSettings] = useState({
-    school_name: "Rodify Driving School",
+    school_name: "Roadify Driving School",
     timezone: "UTC-5 (Eastern Time)",
-    contact_email: "info@rodifydriving.com",
+    contact_email: "info@Roadifydriving.com",
     contact_phone: "+1 (555) 123-4567",
     open_time: "08:00",
     close_time: "18:00",
