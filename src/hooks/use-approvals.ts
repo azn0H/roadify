@@ -108,13 +108,14 @@ export function useApprovals() {
     return data || [];
   };
 
-  const getDocumentUrl = (studentId: string, fileName: string) => {
-    const { data } = supabase
+  const getDocumentUrl = async (studentId: string, fileName: string) => {
+    const { data, error } = await supabase
       .storage
       .from('student-documents')
-      .getPublicUrl(`${studentId}/${fileName}`);
+      .createSignedUrl(`${studentId}/${fileName}`, 3600); // 1 hour expiry
 
-    return data.publicUrl;
+    if (error) throw error;
+    return data?.signedUrl || '';
   };
 
   return {

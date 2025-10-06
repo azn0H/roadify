@@ -23,13 +23,19 @@ interface AccountApprovalCardProps {
 export function AccountApprovalCard({ student }: AccountApprovalCardProps) {
   const { approveAccount, rejectAccount, getStudentDocuments, getDocumentUrl } = useApprovals();
   const [rejectionReason, setRejectionReason] = useState('');
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<Array<{ name: string; url: string }>>([]);
 
   useEffect(() => {
     const loadDocuments = async () => {
       try {
         const docs = await getStudentDocuments(student.id);
-        setDocuments(docs);
+        const docsWithUrls = await Promise.all(
+          docs.map(async (doc) => ({
+            name: doc.name,
+            url: await getDocumentUrl(student.id, doc.name)
+          }))
+        );
+        setDocuments(docsWithUrls);
       } catch (error) {
         console.error('Error loading documents:', error);
       }
@@ -87,7 +93,7 @@ export function AccountApprovalCard({ student }: AccountApprovalCardProps) {
               {documents.map((doc) => (
                 <a
                   key={doc.name}
-                  href={getDocumentUrl(student.id, doc.name)}
+                  href={doc.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 p-2 rounded border hover:bg-accent transition-colors"
