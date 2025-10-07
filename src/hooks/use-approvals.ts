@@ -38,6 +38,15 @@ export function useApprovals() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      // Get student details before updating
+      const { data: student } = await supabase
+        .from('profiles')
+        .select('email, first_name, last_name')
+        .eq('id', userId)
+        .single();
+
+      if (!student) throw new Error('Student not found');
+
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -48,6 +57,26 @@ export function useApprovals() {
         .eq('id', userId);
 
       if (error) throw error;
+
+      // Update user_courses to mark as confirmed
+      const { error: courseError } = await supabase
+        .from('user_courses')
+        .update({
+          instructor_confirmed: true,
+        })
+        .eq('user_id', userId);
+
+      if (courseError) throw courseError;
+
+      // Send approval email
+      const studentName = `${student.first_name || ''} ${student.last_name || ''}`.trim() || 'Student';
+      await supabase.functions.invoke('send-approval-email', {
+        body: {
+          studentEmail: student.email,
+          studentName,
+          status: 'approved',
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-approvals'] });
@@ -69,6 +98,15 @@ export function useApprovals() {
     mutationFn: async ({ userId, reason }: { userId: string; reason: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
+
+      // Get student details before updating
+      const { data: student } = await supabase
+        .from('profiles')
+        .select('email, first_name, last_name')
+        .eq('id', userId)
+        .single();
+
+      if (!student) throw new Error('Student not found');
 
       // Update profile with rejection
       const { error: profileError } = await supabase
@@ -107,6 +145,17 @@ export function useApprovals() {
         });
 
       if (notificationError) throw notificationError;
+
+      // Send rejection email
+      const studentName = `${student.first_name || ''} ${student.last_name || ''}`.trim() || 'Student';
+      await supabase.functions.invoke('send-approval-email', {
+        body: {
+          studentEmail: student.email,
+          studentName,
+          status: 'rejected',
+          rejectionReason: reason,
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-approvals'] });
