@@ -50,10 +50,12 @@ export function StudentOnboarding() {
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [saleCode, setSaleCode] = useState('');
+  const [rejectionMessage, setRejectionMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUserCourse();
     handlePaymentSuccess();
+    checkRejectionStatus();
   }, [user]);
 
   const handlePaymentSuccess = async () => {
@@ -109,6 +111,20 @@ export function StudentOnboarding() {
       setUserCourse(data);
     }
     setLoading(false);
+  };
+
+  const checkRejectionStatus = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('approval_status, rejection_reason')
+      .eq('id', user.id)
+      .single();
+
+    if (!error && data?.approval_status === 'rejected' && data?.rejection_reason) {
+      setRejectionMessage(data.rejection_reason);
+    }
   };
 
   const selectCourse = async (courseId: string) => {
@@ -218,7 +234,19 @@ export function StudentOnboarding() {
 
       if (updateError) throw updateError;
 
+      // Clear rejection status after successful re-upload
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          approval_status: 'pending',
+          rejection_reason: null
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
       setUploadedFile(file);
+      setRejectionMessage(null);
       await fetchUserCourse();
       
       toast({
@@ -443,6 +471,13 @@ Email: info@drivingschool.com
 
                     {step.id === 3 && step.current && (
                       <div className="space-y-4">
+                        {rejectionMessage && (
+                          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                            <h4 className="font-semibold text-destructive mb-2">Váš účet nebyl schválen</h4>
+                            <p className="text-sm text-muted-foreground mb-2">Důvod: {rejectionMessage}</p>
+                            <p className="text-sm font-medium">Prosím nahrajte nové dokumenty níže.</p>
+                          </div>
+                        )}
                         <div className="flex gap-4">
                           <Button 
                             onClick={downloadRequiredDocuments}

@@ -83,6 +83,18 @@ export function useApprovals() {
 
       if (profileError) throw profileError;
 
+      // Reset user course to document upload step
+      const { error: courseError } = await supabase
+        .from('user_courses')
+        .update({
+          onboarding_step: 3,
+          documents_uploaded: false,
+          instructor_confirmed: false,
+        })
+        .eq('user_id', userId);
+
+      if (courseError) throw courseError;
+
       // Create notification for the student
       const { error: notificationError } = await supabase
         .from('notifications')
