@@ -15,6 +15,8 @@ interface Profile {
   avatar_url: string | null;
   email_notifications: boolean;
   mobile_notifications: boolean;
+  approval_status: string | null;
+  rejection_reason: string | null;
   created_at: string;
   updated_at: string;
 }
