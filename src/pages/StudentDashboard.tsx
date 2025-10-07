@@ -26,42 +26,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLessons } from "@/hooks/use-lessons";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
+import { useUserCourse } from "@/hooks/use-user-course";
 import { format } from "date-fns";
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 export default function StudentDashboard() {
   const { user, signOut } = useAuth();
   const { lessons, lessonsLoading, profile } = useLessons();
-  const [userCourse, setUserCourse] = useState(null);
-  const [courseLoading, setCourseLoading] = useState(true);
+  const { userCourse, courseLoading } = useUserCourse();
   const navigate = useNavigate();
   
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
-  };
-  useEffect(() => {
-    fetchUserCourse();
-  }, [user]);
-
-  const fetchUserCourse = async () => {
-    if (!user) return;
-    
-    const { data, error } = await supabase
-      .from('user_courses')
-      .select('*, course:courses(*)')
-      .eq('user_id', user.id)
-      .eq('instructor_confirmed', true)
-      .single();
-
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error fetching user course:', error);
-    } else if (data) {
-      setUserCourse(data);
-    }
-    setCourseLoading(false);
   };
 
   // Show onboarding if user hasn't completed enrollment or if rejected

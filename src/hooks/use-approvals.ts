@@ -81,6 +81,7 @@ export function useApprovals() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-approvals'] });
       queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['user-course'] });
       toast({
         title: "Account approved successfully!",
       });
@@ -160,6 +161,7 @@ export function useApprovals() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-approvals'] });
       queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['user-course'] });
       toast({
         title: "Account rejected",
       });
