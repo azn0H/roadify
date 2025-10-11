@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createPaymentSchema, validateRequest } from "../_shared/validation.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,8 +28,19 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    // Get course info from request
-    const { courseId, saleCode } = await req.json();
+    // Get and validate course info from request
+    const requestBody = await req.json();
+    const validation = validateRequest(createPaymentSchema, requestBody);
+    
+    if (!validation.success) {
+      console.error("Validation error:", validation.error);
+      return new Response(JSON.stringify({ error: validation.error }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
+    const { courseId, saleCode } = validation.data;
     
     // Fetch course details
     const { data: course, error: courseError } = await supabaseClient

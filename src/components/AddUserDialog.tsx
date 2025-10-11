@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { addUserSchema } from "@/lib/validation-schemas";
 
 interface AddUserDialogProps {
   children: React.ReactNode;
@@ -30,6 +31,20 @@ export function AddUserDialog({ children }: AddUserDialogProps) {
     setIsSubmitting(true);
     
     try {
+      // Validate input data
+      const validationResult = addUserSchema.safeParse(formData);
+
+      if (!validationResult.success) {
+        const firstError = validationResult.error.errors[0];
+        toast({
+          title: "Validation Error",
+          description: firstError.message,
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,

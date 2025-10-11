@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { deleteUserSchema, validateRequest } from "../_shared/validation.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,11 +49,19 @@ serve(async (req) => {
       throw new Error("Unauthorized - Admin access required");
     }
 
-    const { userId } = await req.json();
-
-    if (!userId) {
-      throw new Error("User ID is required");
+    // Validate request body
+    const requestBody = await req.json();
+    const validation = validateRequest(deleteUserSchema, requestBody);
+    
+    if (!validation.success) {
+      console.error("Validation error:", validation.error);
+      return new Response(JSON.stringify({ error: validation.error }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
+
+    const { userId } = validation.data;
 
     // Delete from auth.users (this will cascade to profiles due to ON DELETE CASCADE)
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);

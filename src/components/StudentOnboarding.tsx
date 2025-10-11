@@ -17,6 +17,7 @@ import {
   Download,
   FileText
 } from 'lucide-react';
+import { saleCodeSchema, validateFileUpload } from '@/lib/validation-schemas';
 
 interface OnboardingStep {
   id: number;
@@ -163,6 +164,19 @@ export function StudentOnboarding() {
     if (!userCourse) return;
     
     try {
+      // Validate sale code if provided
+      if (saleCode) {
+        const validationResult = saleCodeSchema.safeParse(saleCode);
+        if (!validationResult.success) {
+          toast({
+            title: "Invalid sale code",
+            description: validationResult.error.errors[0].message,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: { 
           courseId: userCourse.course_id,
@@ -213,6 +227,18 @@ export function StudentOnboarding() {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
+
+    // Validate file
+    const validation = validateFileUpload(file);
+    if (!validation.valid) {
+      toast({
+        title: "Invalid file",
+        description: validation.error,
+        variant: "destructive",
+      });
+      event.target.value = ''; // Reset file input
+      return;
+    }
 
     const fileExt = file.name.split('.').pop();
     const fileName = `${user.id}/${Date.now()}.${fileExt}`;

@@ -8,12 +8,15 @@ import { Eye, EyeOff } from "lucide-react";
 import { Car, Home } from "lucide-react";
 import { useLanguage } from "@/hooks/use-language";
 import loginImage from "@/assets/login-image.jpg";
+import { signUpSchema, signInSchema } from "@/lib/validation-schemas";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useLanguage();
+  const { toast } = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,33 +61,69 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
 
-    if (isSignUp) {
-      if (password !== confirmPassword) {
-        alert("Passwords do not match");
-        setLoading(false);
-        return;
-      }
+    try {
+      if (isSignUp) {
+        // Validate sign-up data
+        const validationResult = signUpSchema.safeParse({
+          email,
+          password,
+          confirmPassword,
+          firstName,
+          lastName,
+          phone,
+        });
 
-      const { error } = await signUp(email, password, {
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: phone,
+        if (!validationResult.success) {
+          const firstError = validationResult.error.errors[0];
+          toast({
+            title: "Validation Error",
+            description: firstError.message,
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+
+        const { error } = await signUp(email, password, {
+          first_name: firstName,
+          last_name: lastName,
+          phone_number: phone,
+        });
+
+        if (!error) {
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          setFirstName("");
+          setLastName("");
+          setPhone("");
+        }
+      } else {
+        // Validate sign-in data
+        const validationResult = signInSchema.safeParse({ email, password });
+
+        if (!validationResult.success) {
+          const firstError = validationResult.error.errors[0];
+          toast({
+            title: "Validation Error",
+            description: firstError.message,
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+
+        const { error } = await signIn(email, password);
+        if (!error) {
+          // Redirect will be handled by useEffect
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
       });
-
-      if (!error) {
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setFirstName("");
-        setLastName("");
-        setPhone("");
-      }
-      // Error is already handled by useAuth hook with toast
-    } else {
-      const { error } = await signIn(email, password);
-      if (!error) {
-        // Redirect will be handled by useEffect
-      }
     }
 
     setLoading(false);

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { sendApprovalEmailSchema, validateRequest } from "../_shared/validation.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -22,7 +23,19 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { studentEmail, studentName, status, rejectionReason }: EmailRequest = await req.json();
+    // Validate request body
+    const requestBody = await req.json();
+    const validation = validateRequest(sendApprovalEmailSchema, requestBody);
+    
+    if (!validation.success) {
+      console.error("Validation error:", validation.error);
+      return new Response(JSON.stringify({ error: validation.error }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
+    const { studentEmail, studentName, status, rejectionReason } = validation.data;
 
     console.log(`Sending ${status} email to ${studentEmail}`);
 
